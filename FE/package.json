@@ -4,9 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack serve --config ./config/webpack.config.dev.js",
-    "build": "webpack --config ./config/webpack.config.prod.js",
-    "test": "jest"
+    "dev_webpack": "webpack serve --config ./config/webpack.config.dev.js",
+    "build_webpack": "webpack --config ./config/webpack.config.prod.js",
+    "test": "jest",
+    "dev": "next",
+    "export": "next build && next export",
+    "build": "next build",
+    "start": "next start"
   },
   "author": "",
   "license": "ISC",
@@ -46,7 +50,6 @@
     "ts-jest": "^26.4.4",
     "ts-loader": "^8.0.13",
     "typescript": "^4.1.3",
-    "webpack": "^5.11.1",
     "webpack-cli": "^4.3.1",
     "webpack-dev-server": "^3.11.1",
     "webpack-merge": "^5.7.3"
@@ -54,7 +57,9 @@
   "dependencies": {
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "next": "^10.0.5",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react-dom": "^17.0.1",
+    "webpack": "^4.44.0"
   }
 }
