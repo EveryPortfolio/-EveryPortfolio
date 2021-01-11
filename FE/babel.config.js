@@ -16,7 +16,7 @@ module.exports = (api) => {
     '@babel/preset-react',
   ];
 
-  const plugins = ['@babel/plugin-proposal-optional-chaining'];
+  const plugins = ['@babel/plugin-proposal-optional-chaining', 'babel-plugin-styled-components'];
 
   return {
     presets,
