@@ -1,9 +1,10 @@
 import * as React from 'react';
+import LoginComponent from '../components/LoginComponent';
 
 const Index: React.FunctionComponent = () => {
   return (
     <div>
-      <p>here is index page</p>
+      <LoginComponent />
     </div>
   );
 };
