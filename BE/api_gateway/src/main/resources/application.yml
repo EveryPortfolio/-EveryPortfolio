@@ -1,0 +1,20 @@
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        - name: GlobalFilter
+      routes:
+        - id: user-svc
+          uri: http://user:8080/
+          predicates:
+            - Path=/user/**
+          filters:
+            - name: UserFilter
+              args:
+                baseMessage: Spring Cloud Gateway UserFilter
+                preLogger: true
+                postLogger: true
+
+logging:
+  level:
+    root: info
