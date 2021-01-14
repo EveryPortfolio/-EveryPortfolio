@@ -5,7 +5,7 @@ const Input = styled.input`
   display: block;
   color: white;
   padding-left: 5px;
-  font-size: 17px;
+  font-size: 25px;
   width: 70%;
   height: 45px;
   border-top: 0px;
@@ -21,6 +21,9 @@ const Input = styled.input`
   :-ms-input-placeholder {
     color: white;
     font-size: 20px;
+  }
+  &::placeholder {
+    font-size: 25px;
   }
 `;
 
