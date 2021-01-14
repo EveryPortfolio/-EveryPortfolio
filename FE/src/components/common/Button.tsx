@@ -6,6 +6,9 @@ const ButtonStyle = styled.button`
   border: 1px solid white;
   color: white;
   text-align: center;
+  width: 30%;
+  height: 5%;
+  font-size: 25px;
 `;
 
 interface ButtonProps {
