@@ -2,7 +2,7 @@ import React, { ChangeEvent, ReactEventHandler, useState } from 'react';
 import styled from 'styled-components';
 import { TextDiv } from '../common/TextDiv';
 import { TextInput } from '../common/TextInput';
-// import { Button } from '../common/Button';
+import { Button } from '../common/Button';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -18,7 +18,7 @@ const Wrapper = styled.div`
     background-size: cover;
     background-image: url('/static/background.jpg');
     color: white;
-    z-index: -1;
+    z-index: -2;
     position: absolute;
     left: 0;
     top: 0;
@@ -41,10 +41,27 @@ const RightComponent = styled.div`
   font-size: 80px;
   padding: 10% 5%;
   padding-bottom: 0px;
-  z-index: 3;
   position: relative;
-  background-color: black;
-  opacity: 0.7;
+
+  &::after {
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-color: black;
+    opacity: 0.7;
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  input {
+    margin-top: 80px;
+  }
+
+  button {
+    margin-left: 20%;
+  }
 `;
 
 const ComponentWrapper = styled.div`
@@ -82,16 +99,14 @@ const LoginComponent = () => {
           </LeftComponent>
           <RightComponent>
             <TextDiv size='80px' margin='0px' text='LOGIN' />
-            <TextInput placeholder='email' inputType='text' value={email} onChange={onChangeEmail} />
+            <TextInput placeholder='Email' inputType='text' value={email} onChange={onChangeEmail} />
             <TextInput
-              placeholder='password'
+              placeholder='Password'
               inputType='password'
               value={password}
               onChange={onChangePassword}
             />
-            <button type='button' onClick={(e) => onClick(e)}>
-              제출
-            </button>
+            <Button eventHandler={onClick} text='LOGIN' />
           </RightComponent>
         </ComponentWrapper>
       </Wrapper>
