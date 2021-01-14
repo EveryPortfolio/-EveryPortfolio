@@ -1,72 +1,33 @@
-import React, { ChangeEvent, ReactEventHandler, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { TextDiv } from '../common/TextDiv';
-import { TextInput } from '../common/TextInput';
-import { Button } from '../common/Button';
+import Link from 'next/link';
+import {
+  TextDiv,
+  TextInput,
+  Button,
+  AuthBackground,
+  LeftComponentBackGround,
+  RightComponentBackGround,
+} from '../common';
 
-const Wrapper = styled.div`
-  width: 100%;
-  min-height: 100vh;
-  color: white;
-  z-index: 1;
-  position: relative;
-
-  &::after {
-    width: 100%;
-    min-height: 100vh;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-image: url('/static/background.jpg');
-    color: white;
-    z-index: -2;
-    position: absolute;
-    left: 0;
-    top: 0;
-    content: '';
-    opacity: 0.9;
-  }
+const LinkWrapper = styled.div`
+  margin-top: 100px;
+  font-size: 24px;
 `;
 
-const LeftComponent = styled.div`
-  width: 60%;
-  background-color: none;
-  font-size: 60px;
-  padding: 10% 7%;
-  padding-bottom: 0px;
-  color: white;
-`;
-
-const RightComponent = styled.div`
-  width: 40%;
-  font-size: 80px;
-  padding: 10% 5%;
-  padding-bottom: 0px;
-  position: relative;
-
-  &::after {
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    background-color: black;
-    opacity: 0.7;
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
-
-  input {
-    margin-top: 80px;
-  }
-
-  button {
-    margin-left: 20%;
-  }
-`;
-
-const ComponentWrapper = styled.div`
+const FlexWrapper = styled.div`
   display: flex;
-  height: 100vh;
+
+  div {
+    margin-left: 10px;
+    margin-top: 0px !important;
+  }
+`;
+
+const LinkDiv = styled.div`
+  margin-top: 20px;
+  color: #2a8de8;
+  cursor: pointer;
 `;
 
 const LoginComponent = () => {
@@ -89,27 +50,39 @@ const LoginComponent = () => {
 
   return (
     <>
-      <Wrapper>
-        <ComponentWrapper>
-          <LeftComponent>
-            <TextDiv size='70px' margin='0px' text='Welcome !' />
-            <TextDiv size='130px' margin='20px' text='Every Portfolio' />
-            <TextDiv size='60px' margin='370px' text='Don’t have your PortFolio?' />
-            <TextDiv size='30px' margin='0px' text='You can make your own portfolio easily' />
-          </LeftComponent>
-          <RightComponent>
-            <TextDiv size='80px' margin='0px' text='LOGIN' />
-            <TextInput placeholder='Email' inputType='text' value={email} onChange={onChangeEmail} />
-            <TextInput
-              placeholder='Password'
-              inputType='password'
-              value={password}
-              onChange={onChangePassword}
-            />
-            <Button eventHandler={onClick} text='LOGIN' />
-          </RightComponent>
-        </ComponentWrapper>
-      </Wrapper>
+      <AuthBackground>
+        <LeftComponentBackGround>
+          <TextDiv size='70px' margin='0px' text='Welcome !' />
+          <TextDiv size='130px' margin='20px' text='Every Portfolio' />
+          <TextDiv size='60px' margin='370px' text='Don’t have your PortFolio?' />
+          <TextDiv size='30px' margin='0px' text='You can make your own portfolio easily' />
+        </LeftComponentBackGround>
+        <RightComponentBackGround>
+          <TextDiv size='80px' margin='0px' text='LOGIN' />
+          <TextInput placeholder='Email' inputType='text' value={email} onChange={onChangeEmail} />
+          <TextInput
+            placeholder='Password'
+            inputType='password'
+            value={password}
+            onChange={onChangePassword}
+          />
+          <Button eventHandler={onClick} text='LOGIN' />
+          <LinkWrapper>
+            <FlexWrapper>
+              <span>New to Every Portfolio? </span>
+              <Link href='/signup'>
+                <LinkDiv>Create an Account!</LinkDiv>
+              </Link>
+            </FlexWrapper>
+            <Link href='/find-id'>
+              <LinkDiv>Forgot your ID ?</LinkDiv>
+            </Link>
+            <Link href='/find-id'>
+              <LinkDiv>Forgot your Password ?</LinkDiv>
+            </Link>
+          </LinkWrapper>
+        </RightComponentBackGround>
+      </AuthBackground>
     </>
   );
 };
