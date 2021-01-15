@@ -5,7 +5,7 @@ const Input = styled.input`
   display: block;
   color: white;
   padding-left: 5px;
-  font-size: 17px;
+  font-size: 25px;
   width: 70%;
   height: 45px;
   border-top: 0px;
@@ -22,6 +22,9 @@ const Input = styled.input`
     color: white;
     font-size: 20px;
   }
+  &::placeholder {
+    font-size: 25px;
+  }
 `;
 
 interface TextInputProps {
@@ -33,6 +36,12 @@ interface TextInputProps {
 
 export const TextInput = ({ placeholder, inputType, value, onChange }: TextInputProps): JSX.Element => {
   return (
-    <Input placeholder={placeholder} autoComplete='off' type={inputType} value={value} onChange={onChange} />
+    <Input
+      placeholder={placeholder}
+      autoComplete='off'
+      type={inputType}
+      value={value}
+      onChange={(e) => onChange(e)}
+    />
   );
 };
