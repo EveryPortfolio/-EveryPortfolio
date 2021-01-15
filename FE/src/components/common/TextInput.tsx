@@ -36,6 +36,12 @@ interface TextInputProps {
 
 export const TextInput = ({ placeholder, inputType, value, onChange }: TextInputProps): JSX.Element => {
   return (
-    <Input placeholder={placeholder} autoComplete='off' type={inputType} value={value} onChange={onChange} />
+    <Input
+      placeholder={placeholder}
+      autoComplete='off'
+      type={inputType}
+      value={value}
+      onChange={(e) => onChange(e)}
+    />
   );
 };
