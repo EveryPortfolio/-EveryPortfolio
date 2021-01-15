@@ -1,5 +1,6 @@
 package com.everyportfolio.user.controller;
 
+import com.everyportfolio.user.DTO.AccessTokenDTO;
 import com.everyportfolio.user.DTO.RefreshTokenDTO;
 import com.everyportfolio.user.DTO.UserDTO;
 import com.everyportfolio.user.service.UserService;
@@ -13,13 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("user")
 public class UserController {
     private final Logger log = LoggerFactory.getLogger(UserController.class);
     @Autowired
@@ -36,12 +35,12 @@ public class UserController {
     }
 
     @PostMapping("signin")
-    public ResponseEntity<HashMap<String, Object>> signinUser(@RequestBody UserDTO user) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public ResponseEntity<HashMap<String, Object>> signinUser(@RequestParam String id, @RequestParam String password) throws NoSuchAlgorithmException {
         HashMap<String, Object> result = new HashMap<>();
         HttpHeaders responseHeaders = new HttpHeaders();
 
-        if(userService.signinUser(user.getId(), user.getPassword())) {
-            responseHeaders.add("access-token", jsonWebTokenGenerator.generateAccessToken(user.getId(), "USER"));
+        if(userService.signinUser(id, password)) {
+            responseHeaders.add("access-token", jsonWebTokenGenerator.generateAccessToken(id, "USER"));
 
             byte[] token = new byte[16];
             SecureRandom.getInstance("SHA1PRNG").nextBytes(token);
@@ -50,8 +49,8 @@ public class UserController {
             for(int i = 0; i < token.length; i++)
                 refreshTokenString += String.format("%02X", token[i]);
 
-            responseHeaders.add("refresh-token", jsonWebTokenGenerator.generateRefreshToken(user.getId(), refreshTokenString));
-            userService.updateRefreshToken(user.getId(), refreshTokenString);
+            responseHeaders.add("refresh-token", jsonWebTokenGenerator.generateRefreshToken(id, refreshTokenString));
+            userService.updateRefreshToken(id, refreshTokenString);
 
             result.put("status", "OK");
         }
@@ -64,7 +63,6 @@ public class UserController {
     @PostMapping("refresh")
     public ResponseEntity<HashMap<String, Object>> refreshUser(@RequestHeader(value="refresh-token") String refreshTokenString) {
         RefreshTokenDTO refreshToken = (new Gson()).fromJson(refreshTokenString, RefreshTokenDTO.class);
-        log.info("receive refresh token : " + refreshToken.getToken());
 
         HashMap<String, Object> result = new HashMap<>();
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -80,11 +78,10 @@ public class UserController {
     }
 
     @GetMapping("profile")
-    public ResponseEntity<HashMap<String, Object>> userProfile(@RequestHeader HttpHeaders httpHeaders) {
+    public ResponseEntity<HashMap<String, Object>> userProfile(@RequestHeader(value="access-token") String accessToken) {
         HashMap<String, Object> result = new HashMap<>();
 
-        if(httpHeaders.getFirst("access-token") != null)
-            result.put("id", httpHeaders.getFirst("access-token"));
+        result.put("id", (new Gson()).fromJson(accessToken, AccessTokenDTO.class).getId());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

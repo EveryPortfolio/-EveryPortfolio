@@ -4,15 +4,15 @@ import com.everyportfolio.user.DTO.RefreshTokenDTO;
 import com.everyportfolio.user.DTO.UserDTO;
 import com.everyportfolio.user.mapper.UserMapper;
 import com.everyportfolio.user.model.User;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class UserService {
     private final Logger log = LoggerFactory.getLogger(UserService.class);
-   @Autowired
     private UserMapper userMapper;
 
     public void createUser(UserDTO user){
