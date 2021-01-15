@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import { useDispatch } from 'react-redux';
 import { RightComponentBackGround, TextDiv, TextInput, Button } from '../../common';
 import { Links } from './Links/Links';
+import { requestLogin } from '../../../store/modules/user';
 
 export const RightComponent = (): JSX.Element => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const dispatch = useDispatch();
 
   console.log('render Right');
 
@@ -23,9 +26,13 @@ export const RightComponent = (): JSX.Element => {
   const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     console.log('click button');
-    setEmail('');
-    setPassword('');
-    router.push('/');
+    const params = { email, password };
+    dispatch(requestLogin(params)).then((res) => {
+      console.log(res);
+      setEmail('');
+      setPassword('');
+      // router.push('/');
+    });
   };
 
   return (
