@@ -29,7 +29,7 @@ const ComponentWrapper = styled.div`
   height: 100vh;
 `;
 
-export const AuthBackground = ({ children }: { children: JSX.Element }): JSX.Element => {
+export const AuthBackground = ({ children }: { children: JSX.Element[] }): JSX.Element => {
   return (
     <Wrapper>
       <ComponentWrapper>{children}</ComponentWrapper>
