@@ -1,5 +1,6 @@
 import { Axios } from './config';
 
 export const loginAPI = (params: any): Promise<string> => {
-  return Axios('post', '/api/user', params);
+  console.log(params);
+  return Axios('post', '/api/user/signin', params);
 };
