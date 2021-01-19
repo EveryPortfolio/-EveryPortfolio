@@ -27,12 +27,10 @@ export const RightComponent = (): JSX.Element => {
     e.preventDefault();
     console.log('click button');
     const params = { id: email, password };
-    dispatch(requestLogin(params)).then((res) => {
-      console.log(res);
-      setEmail('');
-      setPassword('');
-      // router.push('/');
-    });
+    dispatch(requestLogin(params));
+    setEmail('');
+    setPassword('');
+    // router.push('/');
   };
 
   return (

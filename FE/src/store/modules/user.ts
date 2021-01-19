@@ -1,39 +1,24 @@
+import { Dispatch } from 'react';
 import { loginAPI } from '../../api/index';
+import { createPromiseThunk, reducerUtils, handleAsyncActions } from '../../lib/asyncUtils';
 
-const LOGIN_SUCCESS = 'user/LOGINS';
+const LOGIN_PENDING = 'user/LOGIN_PENDING';
+const LOGIN_FULFILLED = 'user/LOGIN_FULFILLED';
+const LOGIN_REJECTED = 'user/LOGIN_REJECTED';
 
-export const requestLogin = (params: any) => {
-  /**
-   * @TODO
-   * API 맞춰서 작성하기
-   * const data = loginAPI(params);
-   */
-  const data = loginAPI(params);
-  console.log('result:', data);
-  // const data = new Promise((resolve) => {
-  //   return resolve('check');
-  // });
-
-  return {
-    type: LOGIN_SUCCESS,
-    payload: data,
-  };
-};
+export const requestLogin = createPromiseThunk('user/LOGIN', loginAPI);
 
 const initialState = {
-  successLogin: '',
+  user: reducerUtils.initial(),
 };
 
-export default function user(state = initialState, action: any): any {
+export default function posts(state = initialState, action: any): any {
   switch (action.type) {
-    case `${LOGIN_SUCCESS}_FULFILLED`:
-      console.log('LOGIN_SUCCESS Type', action);
-      return {
-        ...state,
-        successLogin: action.payload,
-      };
+    case LOGIN_PENDING:
+    case LOGIN_FULFILLED:
+    case LOGIN_REJECTED:
+      return handleAsyncActions('user/LOGIN', 'user')(state, action);
     default:
-      console.log('Default Type:', action);
       return state;
   }
 }
