@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { urlObjectKeys } from 'next/dist/next-server/lib/utils';
 
-const DOMAIN = '';
+const DOMAIN = 'http://localhost:3000';
 const Config = axios.create();
 
 Config.interceptors.request.use((value: AxiosRequestConfig) => {
@@ -22,9 +22,12 @@ Config.interceptors.response.use(
 export const Axios = (method: any, url: string, data: any) => {
   return Config({
     method,
-    url: DOMAIN + urlObjectKeys,
+    url,
     data,
   })
-    .then((res) => res.data)
+    .then((res) => {
+      console.log('res:', res);
+      return res.data;
+    })
     .catch((err) => console.log(err));
 };
