@@ -26,7 +26,7 @@ export const RightComponent = (): JSX.Element => {
   const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     console.log('click button');
-    const params = { email, password };
+    const params = { id: email, password };
     dispatch(requestLogin(params)).then((res) => {
       console.log(res);
       setEmail('');
