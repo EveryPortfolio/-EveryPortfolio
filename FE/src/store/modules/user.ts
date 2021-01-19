@@ -8,9 +8,11 @@ export const requestLogin = (params: any) => {
    * API 맞춰서 작성하기
    * const data = loginAPI(params);
    */
-  const data = new Promise((resolve) => {
-    return resolve('check');
-  });
+  const data = loginAPI(params);
+  console.log('result:', data);
+  // const data = new Promise((resolve) => {
+  //   return resolve('check');
+  // });
 
   return {
     type: LOGIN_SUCCESS,
