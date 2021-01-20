@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -13,11 +13,11 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 
+@AllArgsConstructor
 @Configuration
-//@PropertySource(value = {"file:///c:/redis_config.properties", "file:/etc/properties/redis_config.properties"}, ignoreResourceNotFound = true)
+@PropertySource(value = {"file:///c:/redis_config.properties", "file:/etc/properties/redis_config.properties"}, ignoreResourceNotFound = true)
 public class RedisConfiguration {
-   /* @Autowired
-    Environment environment;
+    private Environment environment;
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -35,6 +35,8 @@ public class RedisConfiguration {
         redisStandaloneConfiguration.setPort(Integer.parseInt(environment.getProperty("spring.redis.port")));
         LettuceConnectionFactory lettuceConnectionFactory =
                 new LettuceConnectionFactory(redisStandaloneConfiguration);
+
         return lettuceConnectionFactory;
-    }*/
+    }
+
 }

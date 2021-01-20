@@ -1,12 +1,12 @@
 package com.everyportfolio.user.configuration;
 
 import com.everyportfolio.user.controller.UserController;
+import lombok.AllArgsConstructor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
@@ -14,12 +14,12 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
 
+@AllArgsConstructor
 @Configuration
 @PropertySource(value = {"file:///c:/db_config.properties", "file:/etc/properties/user_db_config.properties"}, ignoreResourceNotFound = true)
 public class DatabaseConfiguration {
     private final Logger log = LoggerFactory.getLogger(UserController.class);
-    @Autowired
-    Environment environment;
+    private Environment environment;
 
     @Bean
     @Primary
