@@ -72,16 +72,16 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
                     accessToken = gson.fromJson(token.get("access-token"), AccessTokenDTO.class);
                 }catch(Exception e) {
                     e.printStackTrace();
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "access-token was wrong. please reissue a access-token");
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "access-token was wrong. please reissue a access-token");
                 }
 
 
                 if(accessToken.getExpired().before(new Date())) {
-                    throw new ResponseStatusException(HttpStatus.REQUEST_TIMEOUT, "access-token was expired");
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "access-token was expired");
                 }
 
                 if(!hmac.equals(newHmac)) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "this access-token was modified");
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "this access-token was modified");
                 }
 
                 try {
@@ -109,22 +109,23 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
                     refreshToken = gson.fromJson(token.get("refresh-token"), RefreshTokenDTO.class);
                 }catch(Exception e) {
                     log.info(e.getMessage());
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "refresh-token was wrong. please reissue a refresh-token");
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "refresh-token was wrong. please reissue a refresh-token");
                 }
 
 
                 if(refreshToken.getExpired().before(new Date())) {
-                    throw new ResponseStatusException(HttpStatus.REQUEST_TIMEOUT, "refresh-token was expired");
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "refresh-token was expired");
                 }
 
                 if(!hmac.equals(newHmac)) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "this refresh-token was modified");
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "this refresh-token was modified");
                 }
 
                 try {
                     request = request.mutate().header("refresh-token", gson.toJson(refreshToken)).build();
                 } catch(Exception e) {
                     log.error(e.getMessage());
+                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "something was wrong, please try again");
                 }
             }
 
