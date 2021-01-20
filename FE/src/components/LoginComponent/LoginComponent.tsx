@@ -1,7 +1,7 @@
 import React from 'react';
 import { AuthBackground } from '../common';
 import { LeftComponent } from './LeftComponent/LeftComponent';
-import { RightComponent } from './RightComponent/RightComponent';
+import { RightContainer } from '../../container/LoginContainer/RightContainer';
 
 const LoginComponent = (): JSX.Element => {
   console.log('Component render');
@@ -9,7 +9,7 @@ const LoginComponent = (): JSX.Element => {
     <>
       <AuthBackground>
         <LeftComponent />
-        <RightComponent />
+        <RightContainer />
       </AuthBackground>
     </>
   );
