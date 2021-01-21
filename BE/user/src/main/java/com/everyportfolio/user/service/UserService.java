@@ -83,4 +83,8 @@ public class UserService {
         return false;
     }
 
+    public void deleteUserById(String id){
+        userMapper.deleteUserById(id);
+    }
+
 }

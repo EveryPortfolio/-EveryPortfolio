@@ -9,4 +9,5 @@ public interface UserMapper {
     void insertUser(User user);
     void updateUserTokenById(String id, String token);
     String selectUserTokenById(String id);
+    void deleteUserById(String id);
 }
