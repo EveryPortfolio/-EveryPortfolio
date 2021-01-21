@@ -33,7 +33,7 @@ public class UserController {
 
     @PostMapping("create")
     public ResponseEntity<String> createUser(@RequestBody UserDTO user) throws Exception {
-        if(userService.checkIdDuplication(user.getId()) || !regularExpressionUtility.emailPatternMatch(user.getId()) || user.getPassword().length() > 16)
+        if(userService.checkIdDuplication(user.getId()) || !regularExpressionUtility.emailPatternMatch(user.getId()) || user.getPassword().length() > 16 || user.getPassword().length() < 8)
             throw new Exception();
 
         user.setPassword(hashingUtility.generateHash(user.getPassword()));
@@ -64,7 +64,7 @@ public class UserController {
 
     @PostMapping("login")
     public ResponseEntity<String> loginUser(@RequestBody LoginDTO login) throws Exception {
-        if(login.getPassword().length() > 16)
+        if(login.getPassword().length() < 8 || login.getPassword().length() > 16)
             throw new Exception();
 
         login.setPassword(hashingUtility.generateHash(login.getPassword()));
@@ -78,7 +78,7 @@ public class UserController {
             responseHeaders.add("refresh-token", jsonWebTokenGenerator.generateRefreshToken(login.getId(), refreshTokenString));
             userService.updateRefreshToken(login.getId(), refreshTokenString);
 
-            return new ResponseEntity<>("OK", responseHeaders, HttpStatus.OK);
+            return new ResponseEntity<>(userService.getUserById(login.getId()).getName(), responseHeaders, HttpStatus.OK);
         }
         else
             return new ResponseEntity<>("Reject", HttpStatus.BAD_REQUEST);
@@ -104,8 +104,9 @@ public class UserController {
     @GetMapping("profile")
     public ResponseEntity<HashMap<String, Object>> userProfile(@RequestHeader(value="access-token") String accessToken) {
         HashMap<String, Object> result = new HashMap<>();
-
-        result.put("id", (new Gson()).fromJson(accessToken, AccessTokenDTO.class).getId());
+        String id = (new Gson()).fromJson(accessToken, AccessTokenDTO.class).getId();
+        result.put("id", id);
+        result.put("name", userService.getUserById(id).getName());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
