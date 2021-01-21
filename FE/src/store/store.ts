@@ -3,11 +3,14 @@ import promiseMiddlerware from 'redux-promise-middleware';
 import reduxThunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import logger from 'redux-logger';
+import { persistStore } from 'redux-persist';
 import reducer from './modules';
 
-const createStoreWidthMiddleware = createStore(
+const store = createStore(
   reducer,
   composeWithDevTools(applyMiddleware(promiseMiddlerware, reduxThunk, logger)),
 );
 
-export default createStoreWidthMiddleware;
+const persistor = persistStore(store);
+
+export { store, persistor };

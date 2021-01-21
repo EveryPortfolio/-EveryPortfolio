@@ -1,38 +1,22 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { useDispatch } from 'react-redux';
+import React from 'react';
 import { RightComponentBackGround, TextDiv, TextInput, Button } from '../../common';
 import { Links } from './Links/Links';
-import { requestLogin } from '../../../store/modules/user';
 
-export const RightComponent = (): JSX.Element => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const router = useRouter();
-  const dispatch = useDispatch();
+interface RightComponentProps {
+  email: string;
+  onChangeEmail: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  password: string;
+  onChangePassword: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+}
 
-  console.log('render Right');
-
-  const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('change Email');
-    setEmail(e.target.value);
-  };
-
-  const onChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('change password');
-    setPassword(e.target.value);
-  };
-
-  const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    console.log('click button');
-    const params = { id: email, password };
-    dispatch(requestLogin(params));
-    setEmail('');
-    setPassword('');
-    // router.push('/');
-  };
-
+export const RightComponent = ({
+  email,
+  onChangeEmail,
+  password,
+  onChangePassword,
+  onClick,
+}: RightComponentProps): JSX.Element => {
   return (
     <RightComponentBackGround>
       <TextDiv size='80px' margin='0px' text='LOGIN' />
