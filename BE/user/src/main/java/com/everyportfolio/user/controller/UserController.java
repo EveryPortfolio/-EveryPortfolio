@@ -50,7 +50,7 @@ public class UserController {
         emailService.setText("https://everyportfolio.com/user/email-authentication?params=" + params);
         emailService.send();
 
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+        return new ResponseEntity<>(user.getName(), HttpStatus.OK);
     }
 
     @GetMapping("email-authentication")
