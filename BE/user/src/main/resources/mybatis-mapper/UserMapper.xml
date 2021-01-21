@@ -25,4 +25,8 @@
     <select id="selectUserTokenById" resultType="String">
         SELECT REFRESH_TOKEN FROM USER WHERE ID = #{id}
     </select>
+
+    <delete id="deleteUserById">
+        DELETE FROM USER WHERE ID = #{id}
+    </delete>
 </mapper>

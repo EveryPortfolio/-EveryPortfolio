@@ -119,4 +119,20 @@ public class UserController {
             return new ResponseEntity<>("Reject", HttpStatus.CONFLICT);
         }
     }
+
+    @DeleteMapping("delete")
+    public ResponseEntity<String> userDelete(@RequestBody LoginDTO login) throws Exception{
+        if(login.getPassword().length() < 8 || login.getPassword().length() > 16)
+            throw new Exception();
+
+        login.setPassword(hashingUtility.generateHash(login.getPassword()));
+
+        if(userService.loginUser(login.getId(), login.getPassword())) {
+            userService.deleteUserById(login.getId());
+            return new ResponseEntity<>("OK", HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>("Reject", HttpStatus.UNAUTHORIZED);
+        }
+    }
 }
