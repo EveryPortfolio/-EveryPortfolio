@@ -33,7 +33,7 @@ public class UserController {
 
     @PostMapping("create")
     public ResponseEntity<String> createUser(@RequestBody UserDTO user) throws Exception {
-        if(userService.checkIdDuplication(user.getId()) || !regularExpressionUtility.emailPatternMatch(user.getId()) || user.getPassword().length() > 16)
+        if(userService.checkIdDuplication(user.getId()) || !regularExpressionUtility.emailPatternMatch(user.getId()) || user.getPassword().length() > 16 || user.getPassword().length() < 8)
             throw new Exception();
 
         user.setPassword(hashingUtility.generateHash(user.getPassword()));
@@ -64,7 +64,7 @@ public class UserController {
 
     @PostMapping("login")
     public ResponseEntity<String> loginUser(@RequestBody LoginDTO login) throws Exception {
-        if(login.getPassword().length() > 16)
+        if(login.getPassword().length() < 8 || login.getPassword().length() > 16)
             throw new Exception();
 
         login.setPassword(hashingUtility.generateHash(login.getPassword()));
