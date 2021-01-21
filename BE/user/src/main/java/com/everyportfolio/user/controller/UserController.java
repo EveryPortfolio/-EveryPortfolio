@@ -50,7 +50,7 @@ public class UserController {
         emailService.setText("https://everyportfolio.com/user/email-authentication?params=" + params);
         emailService.send();
 
-        return new ResponseEntity<>(user.getName(), HttpStatus.OK);
+        return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
     @GetMapping("email-authentication")
@@ -78,7 +78,7 @@ public class UserController {
             responseHeaders.add("refresh-token", jsonWebTokenGenerator.generateRefreshToken(login.getId(), refreshTokenString));
             userService.updateRefreshToken(login.getId(), refreshTokenString);
 
-            return new ResponseEntity<>("OK", responseHeaders, HttpStatus.OK);
+            return new ResponseEntity<>(userService.getUserById(login.getId()).getName(), responseHeaders, HttpStatus.OK);
         }
         else
             return new ResponseEntity<>("Reject", HttpStatus.BAD_REQUEST);
@@ -104,8 +104,9 @@ public class UserController {
     @GetMapping("profile")
     public ResponseEntity<HashMap<String, Object>> userProfile(@RequestHeader(value="access-token") String accessToken) {
         HashMap<String, Object> result = new HashMap<>();
-
-        result.put("id", (new Gson()).fromJson(accessToken, AccessTokenDTO.class).getId());
+        String id = (new Gson()).fromJson(accessToken, AccessTokenDTO.class).getId();
+        result.put("id", id);
+        result.put("name", userService.getUserById(id).getName());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
