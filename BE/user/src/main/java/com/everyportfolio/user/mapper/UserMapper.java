@@ -11,4 +11,5 @@ public interface UserMapper {
     void updateUserTokenById(@Param("id") String id, @Param("token") String token);
     String selectUserTokenById(@Param("id") String id);
     void deleteUserById(@Param("id") String id);
+    void updateUserPasswordById(@Param("id") String id, @Param("password") String password);
 }
