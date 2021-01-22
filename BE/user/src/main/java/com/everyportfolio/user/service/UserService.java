@@ -2,8 +2,10 @@ package com.everyportfolio.user.service;
 
 import com.everyportfolio.user.DTO.RefreshTokenDTO;
 import com.everyportfolio.user.DTO.UserDTO;
+import com.everyportfolio.user.mapper.RedisPasswordChangeMapper;
 import com.everyportfolio.user.mapper.RedisUserMapper;
 import com.everyportfolio.user.mapper.UserMapper;
+import com.everyportfolio.user.model.RedisPasswordChange;
 import com.everyportfolio.user.model.RedisUser;
 import com.everyportfolio.user.model.User;
 import com.everyportfolio.user.utility.RandomUtility;
@@ -22,6 +24,7 @@ public class UserService {
     private UserMapper userMapper;
     private RedisUserMapper redisUserMapper;
     private RandomUtility randomUtility;
+    private RedisPasswordChangeMapper redisPasswordChangeMapper;
 
     public String createRedisUser(UserDTO user) {
         String token = randomUtility.generateRandomString(16);
@@ -31,6 +34,21 @@ public class UserService {
         return token;
     }
 
+    public String createRedisPasswordChange(String id) {
+        String token = randomUtility.generateRandomString(16);
+        RedisPasswordChange temporary = new RedisPasswordChange(id, token);
+        redisPasswordChangeMapper.save(temporary);
+
+        return token;
+    }
+
+    public boolean compareTokenInRedisPasswordChange(String id, String token) {
+
+        if(token.equals(redisPasswordChangeMapper.findById(id).get().getToken()))
+            return true;
+        else
+            return false;
+    }
     public User getRedisUserByToken(String id, String token) throws Exception {
         Optional<RedisUser> user = redisUserMapper.findById(id);
 
@@ -85,6 +103,10 @@ public class UserService {
 
     public void deleteUserById(String id){
         userMapper.deleteUserById(id);
+    }
+
+    public void updateUserPasswordById(String id, String password) {
+        userMapper.updateUserPasswordById(id, password);
     }
 
 }

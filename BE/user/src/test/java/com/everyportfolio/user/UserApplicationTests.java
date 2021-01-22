@@ -1,6 +1,7 @@
 package com.everyportfolio.user;
 
 import com.everyportfolio.user.DTO.LoginDTO;
+import com.everyportfolio.user.DTO.PasswordChangeDTO;
 import com.everyportfolio.user.DTO.UserDTO;
 import com.everyportfolio.user.controller.UserController;
 import com.everyportfolio.user.service.EmailService;
@@ -14,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.HashMap;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -79,6 +82,7 @@ class UserApplicationTests {
 		}
 	}*/
 
+	/*
 	@Test
 	public void testLogout() {
 		LoginDTO loginDTO = new LoginDTO("juyj7282@gmail.com", "1q2w3e4r");
@@ -100,6 +104,37 @@ class UserApplicationTests {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
+
+	/*@Test
+	public void passwordEmailSend() {
+		HashMap<String, String> content = new HashMap<>();
+
+		content.put("id", "juyj7282@gmail.com");
+		try {
+			mockMvc.perform(MockMvcRequestBuilders.post("/find-pwd").contentType("application/json").content((new Gson()).toJson(content))).andDo(print());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}*/
+
+	/*
+	@Test
+	public void passwordChange() {
+		String token = "3DA0A23BD41F6764";
+		PasswordChangeDTO passwordChange = new PasswordChangeDTO("juyj7282@gmail.com", token, "4r3e2w1q");
+		LoginDTO loginDTO = new LoginDTO("juyj7282@gmail.com", "4r3e2w1q");
+		try {
+			mockMvc.perform(MockMvcRequestBuilders.get("/email-authentication-pwd").param("id", "juyj7282@gmail.com").param("token", token)).andDo(print());
+
+
+			mockMvc.perform(MockMvcRequestBuilders.put("/change-pwd").contentType("application/json").content((new Gson()).toJson(passwordChange))).andDo(print());
+
+			mockMvc.perform(MockMvcRequestBuilders.post("/login").contentType("application/json").content((new Gson()).toJson(loginDTO))).andDo(print());
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}*/
+
 
 }

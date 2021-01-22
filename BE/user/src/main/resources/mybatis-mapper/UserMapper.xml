@@ -29,4 +29,9 @@
     <delete id="deleteUserById">
         DELETE FROM USER WHERE ID = #{id}
     </delete>
+
+    <update id="updateUserPasswordById">
+        UPDATE USER SET PASSWORD = #{password} WHERE ID = #{id}
+    </update>
+
 </mapper>
