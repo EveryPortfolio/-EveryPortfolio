@@ -1,5 +1,6 @@
 package com.everyportfolio.user;
 
+import com.everyportfolio.user.DTO.LoginDTO;
 import com.everyportfolio.user.DTO.UserDTO;
 import com.everyportfolio.user.controller.UserController;
 import com.everyportfolio.user.service.EmailService;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -26,6 +28,7 @@ class UserApplicationTests {
 	private EmailService emailService;
 
 	@Test
+	@Order(0)
 	void contextLoads() {
 	}
 
@@ -35,11 +38,11 @@ class UserApplicationTests {
 		.andExpect(status().isOk()).andDo(print());
 	}*/
 
-	@Test
+	/*@Test
 	public void testCheckID() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.get("/check-id").param("id", "123")).andDo(print());
 		mockMvc.perform(MockMvcRequestBuilders.get("/check-id").param("id", "juyj7282@gmail.com")).andDo(print());
-	}
+	}*/
 
 
 	/*@Test
@@ -75,5 +78,28 @@ class UserApplicationTests {
 			e.printStackTrace();
 		}
 	}*/
+
+	@Test
+	public void testLogout() {
+		LoginDTO loginDTO = new LoginDTO("juyj7282@gmail.com", "1q2w3e4r");
+
+		try {
+			MvcResult loginResult = mockMvc.perform(MockMvcRequestBuilders.post("/login").contentType("application/json").content((new Gson()).toJson(loginDTO))).
+									andDo(print()).andReturn();
+
+			String accessToken = loginResult.getResponse().getHeader("access-token");
+			String refreshToken = loginResult.getResponse().getHeader("refresh-token");
+
+			mockMvc.perform(MockMvcRequestBuilders.get("/profile").header("access-token", accessToken)).andDo(print());
+
+			mockMvc.perform(MockMvcRequestBuilders.post("/refresh").header("refresh-token", refreshToken)).andDo(print());
+
+			mockMvc.perform(MockMvcRequestBuilders.post("/logout").header("access-token", accessToken)).andDo(print());
+
+			mockMvc.perform(MockMvcRequestBuilders.post("/refresh").header("refresh-token", refreshToken)).andDo(print());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }
