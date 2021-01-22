@@ -136,5 +136,17 @@ class UserApplicationTests {
 		}
 	}*/
 
+	/*
+	@Test
+	public void passwordLengthException() {
+		LoginDTO loginDTO = new LoginDTO("juyj7282@gmail.com", "1234");
+
+		try {
+			mockMvc.perform(MockMvcRequestBuilders.post("/login").contentType("application/json").content((new Gson()).toJson(loginDTO))).andDo(print());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}*/
+
 
 }

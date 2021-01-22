@@ -1,6 +1,7 @@
 package com.everyportfolio.user.controller;
 
 import com.everyportfolio.user.DTO.*;
+import com.everyportfolio.user.exception.PasswordLengthNotAllowedException;
 import com.everyportfolio.user.service.EmailService;
 import com.everyportfolio.user.service.UserService;
 import com.everyportfolio.user.utility.*;
@@ -35,8 +36,11 @@ public class UserController {
 
     @PostMapping("create")
     public ResponseEntity<String> createUser(@RequestBody UserDTO user) throws Exception {
-        if(userService.checkIdDuplication(user.getId()) || !regularExpressionUtility.emailPatternMatch(user.getId()) || user.getPassword().length() > 16 || user.getPassword().length() < 8)
+        if(userService.checkIdDuplication(user.getId()) || !regularExpressionUtility.emailPatternMatch(user.getId()))
             throw new Exception();
+
+        if(user.getPassword().length() < 8 || user.getPassword().length() > 16)
+            throw new PasswordLengthNotAllowedException(user.getId() + "'s request is rejected");
 
         user.setPassword(hashingUtility.generateHash(user.getPassword()));
 
@@ -67,7 +71,7 @@ public class UserController {
     @PostMapping("login")
     public ResponseEntity<String> loginUser(@RequestBody LoginDTO login) throws Exception {
         if(login.getPassword().length() < 8 || login.getPassword().length() > 16)
-            throw new Exception();
+            throw new PasswordLengthNotAllowedException(login.getId() + "'s request is rejected");
 
         login.setPassword(hashingUtility.generateHash(login.getPassword()));
 
@@ -126,7 +130,7 @@ public class UserController {
     @DeleteMapping("delete")
     public ResponseEntity<String> userDelete(@RequestBody LoginDTO login) throws Exception{
         if(login.getPassword().length() < 8 || login.getPassword().length() > 16)
-            throw new Exception();
+            throw new PasswordLengthNotAllowedException(login.getId() + "'s request is rejected");
 
         login.setPassword(hashingUtility.generateHash(login.getPassword()));
 
@@ -184,7 +188,7 @@ public class UserController {
             throw new Exception();
 
         if(passwordChange.getPassword().length() < 8 || passwordChange.getPassword().length() > 16)
-            throw new Exception();
+            throw new PasswordLengthNotAllowedException(passwordChange.getId() + "'s request is rejected");
 
         passwordChange.setPassword(hashingUtility.generateHash(passwordChange.getPassword()));
 
