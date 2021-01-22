@@ -19,7 +19,7 @@
     </insert>
 
     <update id="updateUserTokenById">
-        UPDATE USER SET REFRESH_TOKEN = #{token} WHERE ID = #{id}
+        UPDATE USER SET REFRESH_TOKEN = #{token, jdbcType=VARCHAR} WHERE ID = #{id}
     </update>
 
     <select id="selectUserTokenById" resultType="String">
