@@ -78,7 +78,7 @@ public class UserService {
     }
 
     public boolean compareRefreshToken(RefreshTokenDTO refreshToken) {
-        if(getUserRefreshToken(refreshToken.getId()).equals(refreshToken.getToken()))
+        if(refreshToken.getToken().equals(getUserRefreshToken(refreshToken.getId())))
             return true;
         return false;
     }

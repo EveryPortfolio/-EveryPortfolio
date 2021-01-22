@@ -72,6 +72,7 @@ public class UserController {
         HttpHeaders responseHeaders = new HttpHeaders();
 
         if(userService.loginUser(login.getId(), login.getPassword())) {
+
             responseHeaders.add("access-token", jsonWebTokenGenerator.generateAccessToken(login.getId(), "USER"));
 
             String refreshTokenString = randomUtility.generateRandomString(16);
@@ -94,11 +95,11 @@ public class UserController {
         if(userService.compareRefreshToken(refreshToken)) {
             result.put("status", "OK");
             responseHeaders.add("access-token", jsonWebTokenGenerator.generateAccessToken(refreshToken.getId(), "USER"));
+            return new ResponseEntity<>(result, responseHeaders, HttpStatus.OK);
         }
         else
-            result.put("status", "Reject");
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        return new ResponseEntity<>(result, responseHeaders, HttpStatus.OK);
     }
 
     @GetMapping("profile")
@@ -134,5 +135,12 @@ public class UserController {
         else {
             return new ResponseEntity<>("Reject", HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    @PostMapping("logout")
+    public ResponseEntity<String> userLogout(@RequestHeader(value="access-token") String accessToken) throws Exception {
+        userService.updateRefreshToken((new Gson()).fromJson(accessToken, AccessTokenDTO.class).getId(), null);
+
+        return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 }
