@@ -14,8 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.security.GeneralSecurityException;
 import java.util.HashMap;
 
 @AllArgsConstructor
@@ -138,9 +140,57 @@ public class UserController {
     }
 
     @PostMapping("logout")
-    public ResponseEntity<String> userLogout(@RequestHeader(value="access-token") String accessToken) throws Exception {
+    public ResponseEntity<String> userLogout(@RequestHeader(value="access-token") String accessToken) {
         userService.updateRefreshToken((new Gson()).fromJson(accessToken, AccessTokenDTO.class).getId(), null);
 
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
+
+    @PostMapping("find-pwd")
+    public ResponseEntity<String> userFindPassword(@RequestBody String id) throws Exception{
+        HashMap<String, String> json = (new Gson()).fromJson(id, new TypeToken<HashMap<String, String>>(){}.getType());
+        id = json.get("id");
+
+        if(!regularExpressionUtility.emailPatternMatch(id))
+            throw new Exception();
+
+        String token = userService.createRedisPasswordChange(id);
+
+        emailService.setFrom("king7282@naver.com");
+        emailService.setTo(id);
+        emailService.setSubject("everyportfolio password authentication");
+        emailService.setText("token : " + token);
+        emailService.send();
+
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
+    @GetMapping("email-authentication-pwd")
+    public ResponseEntity<String> userEmailAuthenticationForPassword(@RequestParam String id, @RequestParam String token) throws Exception {
+
+        if(!userService.compareTokenInRedisPasswordChange(id, token))
+            throw new Exception();
+
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
+
+    @PutMapping("change-pwd")
+    public ResponseEntity<String> userChangePassword(@RequestBody PasswordChangeDTO passwordChange) throws Exception{
+        if(!regularExpressionUtility.emailPatternMatch(passwordChange.getId()))
+            throw new Exception();
+
+        if(!userService.compareTokenInRedisPasswordChange(passwordChange.getId(), passwordChange.getToken()))
+            throw new Exception();
+
+        if(passwordChange.getPassword().length() < 8 || passwordChange.getPassword().length() > 16)
+            throw new Exception();
+
+        passwordChange.setPassword(hashingUtility.generateHash(passwordChange.getPassword()));
+
+        userService.updateUserPasswordById(passwordChange.getId(), passwordChange.getPassword());
+
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
 }
