@@ -2,6 +2,7 @@ package com.everyportfolio.user.service;
 
 import com.everyportfolio.user.DTO.RefreshTokenDTO;
 import com.everyportfolio.user.DTO.UserDTO;
+import com.everyportfolio.user.exception.EmailAuthenticationFailedException;
 import com.everyportfolio.user.mapper.RedisPasswordChangeMapper;
 import com.everyportfolio.user.mapper.RedisUserMapper;
 import com.everyportfolio.user.mapper.UserMapper;
@@ -43,8 +44,9 @@ public class UserService {
     }
 
     public boolean compareTokenInRedisPasswordChange(String id, String token) {
+        Optional<RedisPasswordChange> user = redisPasswordChangeMapper.findById(id);
 
-        if(token.equals(redisPasswordChangeMapper.findById(id).get().getToken()))
+        if(user.isPresent() && token.equals(user.get().getToken()))
             return true;
         else
             return false;
@@ -53,7 +55,7 @@ public class UserService {
         Optional<RedisUser> user = redisUserMapper.findById(id);
 
         if(!user.isPresent() || !user.get().getToken().equals(token))
-            throw new Exception();
+            throw new EmailAuthenticationFailedException(id + "is failed to email authentication while creating");
 
         return user.get().toUser();
     }

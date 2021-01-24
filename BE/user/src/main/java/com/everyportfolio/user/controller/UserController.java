@@ -1,7 +1,7 @@
 package com.everyportfolio.user.controller;
 
 import com.everyportfolio.user.DTO.*;
-import com.everyportfolio.user.exception.PasswordLengthNotAllowedException;
+import com.everyportfolio.user.exception.*;
 import com.everyportfolio.user.service.EmailService;
 import com.everyportfolio.user.service.UserService;
 import com.everyportfolio.user.utility.*;
@@ -15,10 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.security.GeneralSecurityException;
 import java.util.HashMap;
 
 @AllArgsConstructor
@@ -36,8 +33,11 @@ public class UserController {
 
     @PostMapping("create")
     public ResponseEntity<HashMap<String, Object>> createUser(@RequestBody UserDTO user) throws Exception {
-        if(userService.checkIdDuplication(user.getId()) || !regularExpressionUtility.emailPatternMatch(user.getId()))
-            throw new Exception();
+        if(userService.checkIdDuplication(user.getId()))
+            throw new IdDuplicatedException(user.getId() + " is duplicated");
+
+        if(!regularExpressionUtility.emailPatternMatch(user.getId()))
+            throw new EmailRegularExpressionNotMatchedException(user.getId() + "is not matched with email regular expression");
 
         if(user.getPassword().length() < 8 || user.getPassword().length() > 16)
             throw new PasswordLengthNotAllowedException(user.getId() + "'s request is rejected");
@@ -84,7 +84,7 @@ public class UserController {
         login.setPassword(hashingUtility.generateHash(login.getPassword()));
 
         if(!userService.loginUser(login.getId(), login.getPassword()))
-            throw new Exception();
+            throw new LoginDeniedException(login.getId() + "'s login request is denied");
 
         HttpHeaders responseHeaders = new HttpHeaders();
 
@@ -109,7 +109,7 @@ public class UserController {
         RefreshTokenDTO refreshToken = (new Gson()).fromJson(refreshTokenString, RefreshTokenDTO.class);
 
         if(!userService.compareRefreshToken(refreshToken))
-            throw new Exception();
+            throw new RefreshTokenDifferentException(refreshToken.getToken() + "is different");
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("access-token", jsonWebTokenGenerator.generateAccessToken(refreshToken.getId(), "USER"));
@@ -138,10 +138,10 @@ public class UserController {
     @GetMapping("check-id")
     public ResponseEntity<HashMap<String, Object>> userCheckId(@RequestParam String id) throws Exception{
         if(!regularExpressionUtility.emailPatternMatch(id))
-            throw new Exception();
+            throw new EmailRegularExpressionNotMatchedException(id + "is not matched with email regular expression");
 
         if(userService.checkIdDuplication(id))
-            throw new Exception();
+            throw new IdDuplicatedException(id + " is duplicated");
 
         HashMap<String, Object> result = new HashMap<>();
 
@@ -158,7 +158,7 @@ public class UserController {
 
         login.setPassword(hashingUtility.generateHash(login.getPassword()));
         if(!userService.loginUser(login.getId(), login.getPassword()))
-            throw new Exception();
+            throw new LoginDeniedException(login.getId() + "'s login request is denied");
 
 
         userService.deleteUserById(login.getId());
@@ -188,7 +188,7 @@ public class UserController {
         id = json.get("id");
 
         if(!regularExpressionUtility.emailPatternMatch(id))
-            throw new Exception();
+            throw new EmailRegularExpressionNotMatchedException(id + "is not matched with email regular expression");
 
         String token = userService.createRedisPasswordChange(id);
 
@@ -209,7 +209,7 @@ public class UserController {
     public ResponseEntity<HashMap<String, Object>> userEmailAuthenticationForPassword(@RequestParam String id, @RequestParam String token) throws Exception {
 
         if(!userService.compareTokenInRedisPasswordChange(id, token))
-            throw new Exception();
+            throw new EmailAuthenticationFailedException(id + "is failed to email authentication while changing password");
 
         HashMap<String, Object> result = new HashMap<String, Object>();
 
@@ -222,10 +222,10 @@ public class UserController {
     @PutMapping("change-pwd")
     public ResponseEntity<HashMap<String, Object>> userChangePassword(@RequestBody PasswordChangeDTO passwordChange) throws Exception{
         if(!regularExpressionUtility.emailPatternMatch(passwordChange.getId()))
-            throw new Exception();
+            throw new EmailRegularExpressionNotMatchedException(passwordChange.getId() + "is not matched with email regular expression");
 
         if(!userService.compareTokenInRedisPasswordChange(passwordChange.getId(), passwordChange.getToken()))
-            throw new Exception();
+            throw new EmailAuthenticationFailedException(passwordChange.getId() + "is failed to email authentication while changing password");
 
         if(passwordChange.getPassword().length() < 8 || passwordChange.getPassword().length() > 16)
             throw new PasswordLengthNotAllowedException(passwordChange.getId() + "'s request is rejected");
