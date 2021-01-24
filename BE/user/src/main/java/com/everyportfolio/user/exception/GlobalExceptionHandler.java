@@ -7,15 +7,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.HashMap;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
     private final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(PasswordLengthNotAllowedException.class)
-    public ResponseEntity<String> passwordLengthNotAllowedExcepton(PasswordLengthNotAllowedException e) {
+    public ResponseEntity<HashMap<String, Object>> passwordLengthNotAllowedExcepton(PasswordLengthNotAllowedException e) {
         log.info("password's length is not allowed, " + e.getMessage());
 
-        return new ResponseEntity<>("password is too short or long", HttpStatus.BAD_REQUEST);
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("message", "password's length must be in 8 ~ 16");
+        result.put("status", 400);
+        return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
 
 }
