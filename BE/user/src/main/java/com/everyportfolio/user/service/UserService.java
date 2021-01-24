@@ -3,6 +3,7 @@ package com.everyportfolio.user.service;
 import com.everyportfolio.user.DTO.RefreshTokenDTO;
 import com.everyportfolio.user.DTO.UserDTO;
 import com.everyportfolio.user.exception.EmailAuthenticationFailedException;
+import com.everyportfolio.user.exception.LoginDeniedException;
 import com.everyportfolio.user.mapper.RedisPasswordChangeMapper;
 import com.everyportfolio.user.mapper.RedisUserMapper;
 import com.everyportfolio.user.mapper.UserMapper;
@@ -69,7 +70,7 @@ public class UserService {
     public boolean loginUser(String id, String password) {
         User user = this.getUserById(id);
 
-        if(user.getPassword().equals(password))
+        if(user != null && password.equals(user.getPassword()))
             return true;
         return false;
     }

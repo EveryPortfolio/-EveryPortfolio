@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URLEncoder;
 import java.util.HashMap;
 
@@ -32,7 +33,7 @@ public class UserController {
     private HashingUtility hashingUtility;
 
     @PostMapping("create")
-    public ResponseEntity<HashMap<String, Object>> createUser(@RequestBody UserDTO user) throws Exception {
+    public ResponseEntity<HashMap<String, Object>> createUser(@RequestBody @Valid UserDTO user) throws Exception {
         if(userService.checkIdDuplication(user.getId()))
             throw new IdDuplicatedException(user.getId() + " is duplicated");
 
@@ -50,6 +51,7 @@ public class UserController {
 
         String params = URLEncoder.encode(aes256Utility.encrypt((new Gson()).toJson(token)), "UTF-8");
 
+        emailService.createMessage();
         emailService.setFrom("king7282@naver.com");
         emailService.setTo(user.getId());
         emailService.setSubject("everyportfolio sign up authentication");
@@ -192,6 +194,7 @@ public class UserController {
 
         String token = userService.createRedisPasswordChange(id);
 
+        emailService.createMessage();
         emailService.setFrom("king7282@naver.com");
         emailService.setTo(id);
         emailService.setSubject("everyportfolio password authentication");

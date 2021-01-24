@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -52,7 +53,7 @@ public class GlobalExceptionHandler {
 
         HashMap<String, Object> result = new HashMap<>();
 
-        result.put("message", "id don't exist or password is not correct");
+        result.put("message", "id doesn't exist or password is not correct");
         result.put("status", 401);
 
         return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
@@ -80,5 +81,17 @@ public class GlobalExceptionHandler {
         result.put("status", 401);
 
         return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<HashMap<String, Object>> methodArgumentNotValidException(MethodArgumentNotValidException e) {
+        log.info("MethodArgumentNotValidException : " + e.getMessage());
+
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("message", "request is not valid. please check again");
+        result.put("status", 401);
+
+        return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
 }

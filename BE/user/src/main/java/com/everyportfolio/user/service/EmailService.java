@@ -16,10 +16,12 @@ public class EmailService {
 
     public EmailService(JavaMailSender javaMailSender) throws MessagingException {
         this.javaMailSender = javaMailSender;
+    }
+
+    public void createMessage() throws MessagingException {
         message = this.javaMailSender.createMimeMessage();
         messageHelper = new MimeMessageHelper(message, true, "UTF-8");
     }
-
     public void setFrom(String email) throws MessagingException {
         messageHelper.setFrom(email);
     }
