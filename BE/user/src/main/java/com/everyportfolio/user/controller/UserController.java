@@ -35,7 +35,7 @@ public class UserController {
     private HashingUtility hashingUtility;
 
     @PostMapping("create")
-    public ResponseEntity<String> createUser(@RequestBody UserDTO user) throws Exception {
+    public ResponseEntity<HashMap<String, Object>> createUser(@RequestBody UserDTO user) throws Exception {
         if(userService.checkIdDuplication(user.getId()) || !regularExpressionUtility.emailPatternMatch(user.getId()))
             throw new Exception();
 
@@ -56,102 +56,134 @@ public class UserController {
         emailService.setText("https://everyportfolio.com/user/email-authentication?params=" + params);
         emailService.send();
 
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("message", "OK");
+        result.put("status", 200);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("email-authentication")
-    public ResponseEntity<String> authenticateUserEmail(@RequestParam String params) throws Exception {
+    public ResponseEntity<HashMap<String, Object>> authenticateUserEmail(@RequestParam String params) throws Exception {
         HashMap<String, String> token = (new Gson()).fromJson(aes256Utility.decrypt(params), new TypeToken<HashMap<String, String>>(){}.getType());
 
         userService.createUser(userService.getRedisUserByToken(token.get("id"), token.get("token")));
 
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("message", "OK");
+        result.put("status", 200);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping("login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginDTO login) throws Exception {
+    public ResponseEntity<HashMap<String, Object>> loginUser(@RequestBody LoginDTO login) throws Exception {
         if(login.getPassword().length() < 8 || login.getPassword().length() > 16)
             throw new PasswordLengthNotAllowedException(login.getId() + "'s request is rejected");
 
         login.setPassword(hashingUtility.generateHash(login.getPassword()));
 
+        if(!userService.loginUser(login.getId(), login.getPassword()))
+            throw new Exception();
+
         HttpHeaders responseHeaders = new HttpHeaders();
 
-        if(userService.loginUser(login.getId(), login.getPassword())) {
 
-            responseHeaders.add("access-token", jsonWebTokenGenerator.generateAccessToken(login.getId(), "USER"));
+        responseHeaders.add("access-token", jsonWebTokenGenerator.generateAccessToken(login.getId(), "USER"));
 
-            String refreshTokenString = randomUtility.generateRandomString(16);
-            responseHeaders.add("refresh-token", jsonWebTokenGenerator.generateRefreshToken(login.getId(), refreshTokenString));
-            userService.updateRefreshToken(login.getId(), refreshTokenString);
+        String refreshTokenString = randomUtility.generateRandomString(16);
+        responseHeaders.add("refresh-token", jsonWebTokenGenerator.generateRefreshToken(login.getId(), refreshTokenString));
+        userService.updateRefreshToken(login.getId(), refreshTokenString);
 
-            return new ResponseEntity<>(userService.getUserById(login.getId()).getName(), responseHeaders, HttpStatus.OK);
-        }
-        else
-            return new ResponseEntity<>("Reject", HttpStatus.BAD_REQUEST);
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("message", "OK");
+        result.put("status", 200);
+        result.put("name", userService.getUserById(login.getId()).getName());
+
+        return new ResponseEntity<>(result, responseHeaders, HttpStatus.OK);
     }
 
     @PostMapping("refresh")
-    public ResponseEntity<HashMap<String, Object>> refreshUser(@RequestHeader(value="refresh-token") String refreshTokenString) {
+    public ResponseEntity<HashMap<String, Object>> refreshUser(@RequestHeader(value="refresh-token") String refreshTokenString) throws Exception{
         RefreshTokenDTO refreshToken = (new Gson()).fromJson(refreshTokenString, RefreshTokenDTO.class);
 
-        HashMap<String, Object> result = new HashMap<>();
+        if(!userService.compareRefreshToken(refreshToken))
+            throw new Exception();
+
         HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("access-token", jsonWebTokenGenerator.generateAccessToken(refreshToken.getId(), "USER"));
 
-        if(userService.compareRefreshToken(refreshToken)) {
-            result.put("status", "OK");
-            responseHeaders.add("access-token", jsonWebTokenGenerator.generateAccessToken(refreshToken.getId(), "USER"));
-            return new ResponseEntity<>(result, responseHeaders, HttpStatus.OK);
-        }
-        else
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("message", "OK");
+        result.put("status", 200);
 
+        return new ResponseEntity<>(result, responseHeaders, HttpStatus.OK);
     }
 
     @GetMapping("profile")
     public ResponseEntity<HashMap<String, Object>> userProfile(@RequestHeader(value="access-token") String accessToken) {
-        HashMap<String, Object> result = new HashMap<>();
         String id = (new Gson()).fromJson(accessToken, AccessTokenDTO.class).getId();
+        String name = userService.getUserById(id).getName();
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("status", 200);
+        result.put("message", "OK");
         result.put("id", id);
-        result.put("name", userService.getUserById(id).getName());
+        result.put("name", name);
+
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("check-id")
-    public ResponseEntity<String> userCheckId(@RequestParam String id) {
-        if(regularExpressionUtility.emailPatternMatch(id) && !userService.checkIdDuplication(id)) {
-            return new ResponseEntity<>("OK", HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity<>("Reject", HttpStatus.CONFLICT);
-        }
+    public ResponseEntity<HashMap<String, Object>> userCheckId(@RequestParam String id) throws Exception{
+        if(!regularExpressionUtility.emailPatternMatch(id))
+            throw new Exception();
+
+        if(userService.checkIdDuplication(id))
+            throw new Exception();
+
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("message", "OK");
+        result.put("status", 200);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @DeleteMapping("delete")
-    public ResponseEntity<String> userDelete(@RequestBody LoginDTO login) throws Exception{
+    public ResponseEntity<HashMap<String, Object>> userDelete(@RequestBody LoginDTO login) throws Exception{
         if(login.getPassword().length() < 8 || login.getPassword().length() > 16)
             throw new PasswordLengthNotAllowedException(login.getId() + "'s request is rejected");
 
         login.setPassword(hashingUtility.generateHash(login.getPassword()));
+        if(!userService.loginUser(login.getId(), login.getPassword()))
+            throw new Exception();
 
-        if(userService.loginUser(login.getId(), login.getPassword())) {
-            userService.deleteUserById(login.getId());
-            return new ResponseEntity<>("OK", HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity<>("Reject", HttpStatus.UNAUTHORIZED);
-        }
+
+        userService.deleteUserById(login.getId());
+
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("message", "OK");
+        result.put("status", 200);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping("logout")
-    public ResponseEntity<String> userLogout(@RequestHeader(value="access-token") String accessToken) {
+    public ResponseEntity<HashMap<String, Object>> userLogout(@RequestHeader(value="access-token") String accessToken) {
         userService.updateRefreshToken((new Gson()).fromJson(accessToken, AccessTokenDTO.class).getId(), null);
 
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("message", "OK");
+        result.put("status", 200);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping("find-pwd")
-    public ResponseEntity<String> userFindPassword(@RequestBody String id) throws Exception{
+    public ResponseEntity<HashMap<String, Object>> userFindPassword(@RequestBody String id) throws Exception{
         HashMap<String, String> json = (new Gson()).fromJson(id, new TypeToken<HashMap<String, String>>(){}.getType());
         id = json.get("id");
 
@@ -166,21 +198,29 @@ public class UserController {
         emailService.setText("token : " + token);
         emailService.send();
 
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("message", "OK");
+        result.put("status", 200);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("email-authentication-pwd")
-    public ResponseEntity<String> userEmailAuthenticationForPassword(@RequestParam String id, @RequestParam String token) throws Exception {
+    public ResponseEntity<HashMap<String, Object>> userEmailAuthenticationForPassword(@RequestParam String id, @RequestParam String token) throws Exception {
 
         if(!userService.compareTokenInRedisPasswordChange(id, token))
             throw new Exception();
 
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+        HashMap<String, Object> result = new HashMap<String, Object>();
+
+        result.put("message", "OK");
+        result.put("status", 200);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 
     @PutMapping("change-pwd")
-    public ResponseEntity<String> userChangePassword(@RequestBody PasswordChangeDTO passwordChange) throws Exception{
+    public ResponseEntity<HashMap<String, Object>> userChangePassword(@RequestBody PasswordChangeDTO passwordChange) throws Exception{
         if(!regularExpressionUtility.emailPatternMatch(passwordChange.getId()))
             throw new Exception();
 
@@ -191,10 +231,13 @@ public class UserController {
             throw new PasswordLengthNotAllowedException(passwordChange.getId() + "'s request is rejected");
 
         passwordChange.setPassword(hashingUtility.generateHash(passwordChange.getPassword()));
-
         userService.updateUserPasswordById(passwordChange.getId(), passwordChange.getPassword());
 
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("message", "OK");
+        result.put("status", 200);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }
