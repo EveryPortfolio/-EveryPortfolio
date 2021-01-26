@@ -1,4 +1,3 @@
-import { Dispatch } from 'react';
 import { loginAPI } from '../../api/index';
 import { createPromiseThunk, reducerUtils, handleAsyncActions } from '../../lib/asyncUtils';
 
