@@ -4,13 +4,16 @@ import reduxThunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import logger from 'redux-logger';
 import { persistStore } from 'redux-persist';
+import { createWrapper } from 'next-redux-wrapper';
 import reducer from './modules';
 
-const store = createStore(
-  reducer,
-  composeWithDevTools(applyMiddleware(promiseMiddlerware, reduxThunk, logger)),
-);
+const middlewrares = [logger, promiseMiddlerware, reduxThunk];
 
-const persistor = persistStore(store);
+const makeStore = () => {
+  const store = createStore(reducer, undefined, composeWithDevTools(applyMiddleware(...middlewrares)));
+  store.__persistor = persistStore(store);
+  console.log('persist:', store.__persistor);
+  return store;
+};
 
-export { store, persistor };
+export const wrapper = createWrapper(makeStore);
