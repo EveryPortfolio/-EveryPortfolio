@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { urlObjectKeys } from 'next/dist/next-server/lib/utils';
 
 const DOMAIN = 'http://localhost:3000';
+
 const Config = axios.create();
 
 Config.interceptors.request.use((value: AxiosRequestConfig) => {
@@ -13,8 +13,11 @@ Config.interceptors.request.use((value: AxiosRequestConfig) => {
 });
 
 Config.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return response;
+  },
   (error) => {
+    alert(error.response.data.message);
     return Promise.reject(error);
   },
 );
@@ -24,10 +27,8 @@ export const Axios = (method: any, url: string, data: any) => {
     method,
     url,
     data,
-  })
-    .then((res) => {
-      console.log('res:', res);
-      return res.data;
-    })
-    .catch((err) => console.log(err));
+  }).then((res) => {
+    console.log('response:', res);
+    return res.data;
+  });
 };
