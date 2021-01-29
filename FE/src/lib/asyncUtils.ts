@@ -1,19 +1,26 @@
 import { Dispatch } from 'react';
 
-export const createPromiseThunk = (type: string, promiseCreator: (params: any) => Promise<string>): any => {
-  const [PENDING, FULFILLED, REJECTED] = [`${type}_PENDING`, `${type}_FULFILLED`, `${type}_REJECTED`];
+export const createPromiseThunk = (type: string, promiseCreator: (params: any) => Promise<string>) => (
+  params: any,
+) => ({
+  type,
+  payload: promiseCreator(params),
+});
 
-  return (param: any) => (dispatch: Dispatch<any>) => {
-    dispatch({ type: PENDING, param });
-    promiseCreator(param)
-      .then((payload) => {
-        dispatch({ type: FULFILLED, payload });
-      })
-      .catch((payload) => {
-        dispatch({ type: REJECTED, payload });
-      });
-  };
-};
+// export const createPromiseThunk = (type: string, promiseCreator: (params: any) => Promise<string>): any => {
+//   const [PENDING, FULFILLED, REJECTED] = [`${type}_PENDING`, `${type}_FULFILLED`, `${type}_REJECTED`];
+
+//   return (param: any) => (dispatch: Dispatch<any>) => {
+//     dispatch({ type: PENDING, param });
+//     promiseCreator(param)
+//       .then((payload) => {
+//         dispatch({ type: FULFILLED, payload });
+//       })
+//       .catch((payload) => {
+//         dispatch({ type: REJECTED, payload });
+//       });
+//   };
+// };
 
 export const reducerUtils = {
   initial: (initialData = null): any => ({
