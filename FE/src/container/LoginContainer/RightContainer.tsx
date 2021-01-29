@@ -26,10 +26,9 @@ export const RightContainer = (): JSX.Element => {
     e.preventDefault();
     console.log('click button');
     const params = { id: email, password };
-    requestLogin(params).then((result) => dispatch(result));
-    // new Promise((resolve, reject) => {
-    //   resolve(dispatch(requestLogin(params)));
-    // }).then((result) => console.log('result:', result));
+    dispatch(requestLogin(params))
+      .then((res) => console.log(res))
+      .catch((err) => console.log('err check:', err));
     setEmail('');
     setPassword('');
     // router.push('/');
