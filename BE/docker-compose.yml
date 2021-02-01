@@ -7,6 +7,7 @@ services:
             - "80:8080"
         depends_on:
             - redis
+            - nginx
     user:
         image: king7282/everyportfolio:user
         volumes:
@@ -16,8 +17,10 @@ services:
     portfolio:
         image: king7282/everyportfolio:portfolio
         volumes:
-            - d:/properties:/etc/properties   
+            - d:/properties:/etc/properties
     redis:
         image: redis
         volumes:
             - c:/redis.conf:/usr/local/etc/redis/redis.conf
+    nginx:
+        image: nginx
