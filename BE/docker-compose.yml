@@ -13,6 +13,10 @@ services:
             - d:/properties:/etc/properties
         depends_on:
             - redis
+    portfolio:
+        image: king7282/everyportfolio:portfolio
+        volumes:
+            - d:/properties:/etc/properties   
     redis:
         image: redis
         volumes:

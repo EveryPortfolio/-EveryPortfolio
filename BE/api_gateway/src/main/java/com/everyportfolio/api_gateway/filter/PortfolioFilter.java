@@ -5,12 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-@Component
-public class UserFilter extends AbstractGatewayFilterFactory<UserFilter.Config> {
-    private final Logger log = LoggerFactory.getLogger(UserFilter.class);
+public class PortfolioFilter extends AbstractGatewayFilterFactory<PortfolioFilter.Config> {
+    private final Logger log = LoggerFactory.getLogger(PortfolioFilter.class);
     @Data
     public static class Config {
         private String baseMessage;
@@ -18,12 +16,12 @@ public class UserFilter extends AbstractGatewayFilterFactory<UserFilter.Config> 
         private boolean postLogger;
     }
 
-    public UserFilter() {
-        super(UserFilter.Config.class);
+    public PortfolioFilter() {
+        super(PortfolioFilter.Config.class);
     }
 
     @Override
-    public GatewayFilter apply(UserFilter.Config config) {
+    public GatewayFilter apply(PortfolioFilter.Config config) {
         return ((exchange, chain) -> {
             log.info("GlobalFilter baseMessage>>>>>>" + config.getBaseMessage());
             if (config.isPreLogger()) {

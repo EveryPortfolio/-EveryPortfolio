@@ -14,6 +14,16 @@ spring:
                 baseMessage: Spring Cloud Gateway UserFilter
                 preLogger: true
                 postLogger: true
+        - id: portfolio-svc
+          url: http://portfolio:8080/
+          predicates:
+            - Path=/portfolio/**
+          filters:
+            - name: PortfolioFilter
+              args:
+                baseMessage: Spring Cloud Gateway PortfolioFilter
+                preLogger: true
+                postLogger: true
 
 logging:
   level:
