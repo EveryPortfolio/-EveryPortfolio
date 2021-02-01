@@ -1,4 +1,4 @@
-import { applyMiddleware, createStore } from 'redux';
+import { applyMiddleware, createStore, $CombinedState } from 'redux';
 import promiseMiddlerware from 'redux-promise-middleware';
 import reduxThunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
@@ -11,8 +11,8 @@ const middlewrares = [logger, promiseMiddlerware, reduxThunk];
 
 const makeStore = () => {
   const store = createStore(reducer, undefined, composeWithDevTools(applyMiddleware(...middlewrares)));
-  store.__persistor = persistStore(store);
-  console.log('persist:', store.__persistor);
+  (store as any).__persistor = persistStore(store);
+  console.log('persist:', (store as any).__persistor);
   return store;
 };
 
