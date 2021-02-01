@@ -9,7 +9,7 @@ export default wrapper.withRedux(function MyApp({ Component, pageProps }) {
     <ReactReduxContext.Consumer>
       {({ store }) => {
         return (
-          <PersistGate persistor={store.__persistor}>
+          <PersistGate persistor={(store as any).__persistor}>
             <GlobalStyle />
             <Component {...pageProps} />
           </PersistGate>

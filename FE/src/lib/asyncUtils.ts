@@ -1,9 +1,19 @@
 export const createPromiseThunk = (type: string, promiseCreator: (params: any) => Promise<string>) => (
   params: any,
-) => ({
-  type,
-  payload: promiseCreator(params),
-});
+  pushStateHandler: any,
+) => {
+  return (dispatch) => {
+    const response = dispatch({
+      type,
+      payload: promiseCreator(params),
+    });
+
+    response.then((res) => {
+      console.log('result:', res);
+      pushStateHandler();
+    });
+  };
+};
 
 export const reducerUtils = {
   initial: (initialData = null): any => ({
