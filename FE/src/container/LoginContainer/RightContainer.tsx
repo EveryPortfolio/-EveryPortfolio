@@ -22,16 +22,17 @@ export const RightContainer = (): JSX.Element => {
     setPassword(e.target.value);
   };
 
+  const pushStateHandler = () => {
+    router.push('/signup');
+  };
+
   const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     console.log('click button');
     const params = { id: email, password };
-    dispatch(requestLogin(params))
-      .then((res) => console.log(res))
-      .catch((err) => console.log('err check:', err));
+    dispatch(requestLogin(params, pushStateHandler));
     setEmail('');
     setPassword('');
-    // router.push('/');
   };
 
   return (
