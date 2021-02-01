@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
-public class PortfolioFilter extends AbstractGatewayFilterFactory<PortfolioFilter.Config> {
-    private final Logger log = LoggerFactory.getLogger(PortfolioFilter.class);
+public class ResourceFilter extends AbstractGatewayFilterFactory<ResourceFilter.Config> {
+    private final Logger log = LoggerFactory.getLogger(ResourceFilter.class);
     @Data
     public static class Config {
         private String baseMessage;
@@ -18,21 +18,18 @@ public class PortfolioFilter extends AbstractGatewayFilterFactory<PortfolioFilte
         private boolean postLogger;
     }
 
-    public PortfolioFilter() {
-        super(PortfolioFilter.Config.class);
-    }
-
+    public ResourceFilter () {super(ResourceFilter.Config.class);}
     @Override
-    public GatewayFilter apply(PortfolioFilter.Config config) {
+    public GatewayFilter apply(ResourceFilter.Config config) {
         return ((exchange, chain) -> {
-            log.info("PortfolioFilter baseMessage>>>>>>" + config.getBaseMessage());
+            log.info("ResourceFilter baseMessage>>>>>>" + config.getBaseMessage());
             if (config.isPreLogger()) {
-                log.info("PortfolioFilter Start>>>>>>" + exchange.getRequest());
+                log.info("ResourceFilter Start>>>>>>" + exchange.getRequest());
             }
 
             return chain.filter(exchange).then(Mono.fromRunnable(()->{
                 if (config.isPostLogger()) {
-                    log.info("PortfolioFilter End>>>>>>" + exchange.getResponse());
+                    log.info("ResourceFilter End>>>>>>" + exchange.getResponse());
                 }
             }));
         });
