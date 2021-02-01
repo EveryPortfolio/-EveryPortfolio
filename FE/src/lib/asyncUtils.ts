@@ -14,10 +14,6 @@ export const createPromiseThunk = (type: string, promiseCreator: (params: any) =
     });
   };
 };
-// ({
-//   type,
-//   payload: promiseCreator(params),
-// });
 
 export const reducerUtils = {
   initial: (initialData = null): any => ({
