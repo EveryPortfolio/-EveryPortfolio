@@ -18,14 +18,11 @@ import javax.sql.DataSource;
 @Configuration
 @PropertySource(value = {"file:///c:/db_config.properties", "file:/etc/properties/user_db_config.properties"}, ignoreResourceNotFound = true)
 public class DatabaseConfiguration {
-    private final Logger log = LoggerFactory.getLogger(UserController.class);
     private Environment environment;
 
     @Bean
     @Primary
     public DataSource customDataSource() {
-        log.info(environment.getProperty("spring.datasource.url"));
-
         return DataSourceBuilder
                 .create()
                 .url(environment.getProperty("spring.datasource.url"))
