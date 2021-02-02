@@ -1,6 +1,7 @@
 package com.everyportfolio.portfolio.controller;
 
 import com.everyportfolio.portfolio.DTO.AccessTokenDTO;
+import com.everyportfolio.portfolio.DTO.PortfolioContentDTO;
 import com.everyportfolio.portfolio.DTO.PortfolioDTO;
 import com.everyportfolio.portfolio.DTO.PortfolioTitleDTO;
 import com.everyportfolio.portfolio.service.PortfolioService;
@@ -46,5 +47,20 @@ public class PortfolioController {
         result.put("message", "OK");
 
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PutMapping("/update/content")
+    public ResponseEntity<HashMap<String, Object>> updatePortfolioContent(@RequestBody PortfolioContentDTO content, @RequestHeader("access-token") String accessToken) throws Exception{
+        String id = gson.fromJson(accessToken, AccessTokenDTO.class).getId();
+        if(!portfolioService.compareUserIdWithCreator(id, content.getTableId()))
+            throw new Exception();
+
+        portfolioService.updatePortfolioContent(content.getTableId(), content.getTemplateType(), content.getContent());
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("status", 200);
+        result.put("message", "OK");
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+
     }
 }
