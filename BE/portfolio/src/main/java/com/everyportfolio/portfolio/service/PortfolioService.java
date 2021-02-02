@@ -9,7 +9,21 @@ import org.springframework.stereotype.Service;
 public class PortfolioService {
     private PortfolioMapper portfolioMapper;
 
-    public void createProtfolio(String id, String title, String content, int templateType) {
+    public void createPortfolio(String id, String title, String content, int templateType) {
         portfolioMapper.insertPortfolio(id, title, content, templateType);
+    }
+
+    public boolean compareUserIdWithCreator(String id, int tableId) {
+        if(id.equals(portfolioMapper.selectPortfolioUserIdByTableId(tableId)))
+            return true;
+        return false;
+    }
+
+    public void updatePortfolioTitle(int tableId, String title) {
+        portfolioMapper.updatePortfolioTitle(tableId, title);
+    }
+
+    public void updatePortfolioContent(int tableId, int templateType, String content) {
+        portfolioMapper.updatePortfolioContent(tableId, templateType, content);
     }
 }
