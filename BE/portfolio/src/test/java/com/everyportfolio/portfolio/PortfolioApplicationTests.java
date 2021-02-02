@@ -37,4 +37,20 @@ class PortfolioApplicationTests {
 			e.printStackTrace();
 		}
 	}
+
+	@Test
+	void checkUpdateContent() {
+		String accessToken = "{ \"id\": \"juyj7282@gmail.com\", \"auth\" : \"USER\" }";
+		HashMap<String, Object> params = new HashMap<>();
+
+		params.put("tableId", 10);
+		params.put("content", "changeContent!!!!");
+		params.put("templateType", 1);
+
+		try {
+			mockMvc.perform(MockMvcRequestBuilders.put("/update/content").contentType("application/json").header("access-token", accessToken).content((new Gson()).toJson(params))).andDo(print());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
