@@ -21,4 +21,8 @@
     <update id="updatePortfolioContent">
         UPDATE PORTFOLIO SET TEMPLATE_TYPE=#{templateType}, CONTENT=#{content} WHERE TABLE_ID = #{tableId}
     </update>
+
+    <delete id="deletePortfolio">
+        DELETE FROM PORTFOLIO WHERE TABLE_ID = #{tableId}
+    </delete>
 </mapper>

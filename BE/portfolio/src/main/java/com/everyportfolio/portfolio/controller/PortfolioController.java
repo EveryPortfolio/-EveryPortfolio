@@ -1,9 +1,6 @@
 package com.everyportfolio.portfolio.controller;
 
-import com.everyportfolio.portfolio.DTO.AccessTokenDTO;
-import com.everyportfolio.portfolio.DTO.PortfolioContentDTO;
-import com.everyportfolio.portfolio.DTO.PortfolioDTO;
-import com.everyportfolio.portfolio.DTO.PortfolioTitleDTO;
+import com.everyportfolio.portfolio.DTO.*;
 import com.everyportfolio.portfolio.service.PortfolioService;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
@@ -13,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
 import java.util.HashMap;
 
 @RestController
@@ -61,6 +59,21 @@ public class PortfolioController {
         result.put("message", "OK");
 
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<HashMap<String, Object>> deletePortfolio(@RequestBody PortfolioDeleteDTO delete, @RequestHeader("access-token") String accessToken) throws Exception {
+        String id = gson.fromJson(accessToken, AccessTokenDTO.class).getId();
+
+        if(!portfolioService.compareUserIdWithCreator(id, delete.getTableId()))
+            throw new Exception();
+
+        portfolioService.deletePortfolio(delete.getTableId());
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("status", 200);
+        result.put("message", "OK");
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
