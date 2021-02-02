@@ -22,4 +22,8 @@ public class PortfolioService {
     public void updatePortfolioTitle(int tableId, String title) {
         portfolioMapper.updatePortfolioTitle(tableId, title);
     }
+
+    public void updatePortfolioContent(int tableId, int templateType, String content) {
+        portfolioMapper.updatePortfolioContent(tableId, templateType, content);
+    }
 }
