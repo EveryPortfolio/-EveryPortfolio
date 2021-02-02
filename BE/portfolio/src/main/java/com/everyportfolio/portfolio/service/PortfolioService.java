@@ -18,4 +18,8 @@ public class PortfolioService {
             return true;
         return false;
     }
+
+    public void updatePortfolioTitle(int tableId, String title) {
+        portfolioMapper.updatePortfolioTitle(tableId, title);
+    }
 }
