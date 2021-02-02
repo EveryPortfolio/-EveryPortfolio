@@ -26,4 +26,8 @@ public class PortfolioService {
     public void updatePortfolioContent(int tableId, int templateType, String content) {
         portfolioMapper.updatePortfolioContent(tableId, templateType, content);
     }
+
+    public void deletePortfolio(int tableId) {
+        portfolioMapper.deletePortfolio(tableId);
+    }
 }
