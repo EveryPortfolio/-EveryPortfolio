@@ -9,5 +9,5 @@ public interface PortfolioMapper {
     String selectPortfolioUserIdByTableId(@Param("tableId") int tableId);
     void updatePortfolioTitle(@Param("tableId") int tableId, @Param("title") String title);
     void updatePortfolioContent(@Param("tableId") int tableId, @Param("templateType") int templateType, @Param("content") String content);
-
+    void deletePortfolio(@Param("tableId") int tableId);
 }
