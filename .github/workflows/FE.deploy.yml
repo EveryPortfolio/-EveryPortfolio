@@ -56,18 +56,18 @@ jobs:
         uses: garygrossgarten/github-action-scp@release
         with:
           local: ./FE/out
-          remote: /etc/front-end
+          remote: ~/front-end
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SSH_USER }}
           privateKey: ${{ secrets.PRIVATEKEY }}
      
-      - name: Build Docker Images
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{secrets.HOST}}
-          username: ${{secrets.SSH_USER}}
-          key: ${{secrets.PRIVATEKEY}}
-          port: 22
-          script: |
-            docker-compose down
-            docker-compose up -d
+#       - name: Build Docker Images
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{secrets.HOST}}
+#           username: ${{secrets.SSH_USER}}
+#           key: ${{secrets.PRIVATEKEY}}
+#           port: 22
+#           script: |
+#             docker-compose down
+#             docker-compose up -d
