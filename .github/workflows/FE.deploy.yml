@@ -66,7 +66,7 @@ jobs:
           # content of ssh private key. ex raw content of ~/.ssh/id_rsa
           key: ${{ secrets.PRIVATEKEY }}
           # ssh remote password
-          local: ./FE/out
+          local: ./FE/out/*
           # destination for copy
           remote: ~/front-end/
           
