@@ -4,6 +4,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.everyportfolio.portfolio.mapper.PortfolioMapper">
+    <resultMap id="portfolioModel" type="com.everyportfolio.portfolio.model.Portfolio">
+        <id column="table_id" property="tableId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="last_update" property="lastUpdateTime"/>
+    </resultMap>
 
     <insert id="insertPortfolio">
         INSERT INTO PORTFOLIO (USER_ID, TITLE, CONTENT, TEMPLATE_TYPE)
@@ -25,4 +32,8 @@
     <delete id="deletePortfolio">
         DELETE FROM PORTFOLIO WHERE TABLE_ID = #{tableId}
     </delete>
+
+    <select id="selectPortfolioByTableId" resultMap="portfolioModel">
+        SELECT TABLE_ID, USER_ID, TITLE, CONTENT, LAST_UPDATE FROM PORTFOLIO WHERE TABLE_ID = #{tableId}
+    </select>
 </mapper>

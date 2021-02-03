@@ -1,6 +1,7 @@
 package com.everyportfolio.portfolio.service;
 
 import com.everyportfolio.portfolio.mapper.PortfolioMapper;
+import com.everyportfolio.portfolio.model.Portfolio;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,5 +30,9 @@ public class PortfolioService {
 
     public void deletePortfolio(int tableId) {
         portfolioMapper.deletePortfolio(tableId);
+    }
+
+    public Portfolio selectPortfolioByTableId(int tableId) {
+        return portfolioMapper.selectPortfolioByTableId(tableId);
     }
 }
