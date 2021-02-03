@@ -7,4 +7,13 @@
     <select id="selectLikeCountByTableId" resultType="int">
         SELECT COUNT(*) FROM LIKE_LIST WHERE TABLE_ID = #{tableId}
     </select>
+    <select id="selectLikeCountByTableIdAndUserId" resultType="int">
+        SELECT COUNT(*) FROM LIKE_LIST WHERE TABLE_ID = #{tableId} AND USER_ID = #{userId}
+    </select>
+    <insert id="insertLikeList">
+        INSERT INTO LIKE_LIST (TABLE_ID, USER_ID) VALUES (#{tableId}, #{userId})
+    </insert>
+    <delete id="deleteLikeListByTableIdAndUserId">
+        DELETE FROM LIKE_LIST WHERE TABLE_ID = #{tableId} AND USER_ID = #{userId}
+    </delete>
 </mapper>
