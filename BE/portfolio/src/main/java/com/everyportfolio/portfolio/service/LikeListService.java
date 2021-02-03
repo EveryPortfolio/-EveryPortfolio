@@ -24,4 +24,10 @@ public class LikeListService {
             likeListMapper.insertLikeList(tableId, userId);
         }
     }
+
+    public boolean checkLikeByTableIdAndUserId(int tableId, String userId) {
+        if(likeListMapper.selectLikeCountByTableIdAndUserId(tableId, userId) == 0)
+            return false;
+        return true;
+    }
 }

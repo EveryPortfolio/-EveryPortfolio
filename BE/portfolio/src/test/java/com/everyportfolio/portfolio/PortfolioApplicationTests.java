@@ -77,14 +77,25 @@ class PortfolioApplicationTests {
 		}
 	}*/
 
-	@Test
+    /*@Test
 	void checkSwitchLike() {
 		String accessToken = "{ \"id\": \"juyj7282@gmail.com\", \"auth\" : \"USER\" }";
 		HashMap<String, Object> content = new HashMap<>();
-		content.put("tableId", 10);
+		content.put("tableId", 11);
 
 		try {
 			mockMvc.perform(MockMvcRequestBuilders.post("/like").header("access-token", accessToken).contentType("application/json").content((new Gson()).toJson(content))).andDo(print());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}*/
+
+	@Test
+	void checkLikeCheck() {
+		String accessToken = "{ \"id\": \"juyj7282@gmail.com\", \"auth\" : \"USER\" }";
+
+		try {
+			mockMvc.perform(MockMvcRequestBuilders.get("/like").header("access-token", accessToken).param("tableId", "11")).andDo(print());
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
