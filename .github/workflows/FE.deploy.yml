@@ -59,4 +59,3 @@ jobs:
           remote: /etc/front-end
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SSH_USER }}
-          privateKey: ${{ secrets.PRIVATEKEY }}
