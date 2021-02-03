@@ -68,10 +68,23 @@ class PortfolioApplicationTests {
 		}
 	}*/
 
-	@Test
+	/*@Test
 	void checkGetPortfolio() {
 		try {
 			mockMvc.perform(MockMvcRequestBuilders.get("/view").param("tableId","11")).andDo(print());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}*/
+
+	@Test
+	void checkSwitchLike() {
+		String accessToken = "{ \"id\": \"juyj7282@gmail.com\", \"auth\" : \"USER\" }";
+		HashMap<String, Object> content = new HashMap<>();
+		content.put("tableId", 10);
+
+		try {
+			mockMvc.perform(MockMvcRequestBuilders.post("/like").header("access-token", accessToken).contentType("application/json").content((new Gson()).toJson(content))).andDo(print());
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
