@@ -1,5 +1,6 @@
 package com.everyportfolio.portfolio.mapper;
 
+import com.everyportfolio.portfolio.model.Portfolio;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -10,4 +11,5 @@ public interface PortfolioMapper {
     void updatePortfolioTitle(@Param("tableId") int tableId, @Param("title") String title);
     void updatePortfolioContent(@Param("tableId") int tableId, @Param("templateType") int templateType, @Param("content") String content);
     void deletePortfolio(@Param("tableId") int tableId);
+    Portfolio selectPortfolioByTableId(@Param("tableId") int tableId);
 }

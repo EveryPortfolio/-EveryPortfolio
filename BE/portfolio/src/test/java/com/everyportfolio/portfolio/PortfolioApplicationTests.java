@@ -54,7 +54,7 @@ class PortfolioApplicationTests {
 		}
 	}*/
 
-	@Test
+	/*@Test
 	void checkDelete() {
 		String accessToken = "{ \"id\": \"juyj7282@gmail.com\", \"auth\" : \"USER\" }";
 		HashMap<String, Object> params = new HashMap<>();
@@ -63,6 +63,15 @@ class PortfolioApplicationTests {
 
 		try {
 			mockMvc.perform(MockMvcRequestBuilders.delete("/delete").contentType("application/json").header("access-token", accessToken).content((new Gson()).toJson(params))).andDo(print());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}*/
+
+	@Test
+	void checkGetPortfolio() {
+		try {
+			mockMvc.perform(MockMvcRequestBuilders.get("/view").param("tableId","11")).andDo(print());
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
