@@ -110,4 +110,23 @@ public class PortfolioController {
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @GetMapping("/like")
+    public ResponseEntity<HashMap<String, Object>> getLikeList(@RequestParam("tableId") int tableId, @RequestHeader("access-token") String accessToken) throws Exception{
+        if(!portfolioService.existPortfolioByTableId(tableId))
+            throw new Exception();
+
+        String id = gson.fromJson(accessToken, AccessTokenDTO.class).getId();
+
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("status", 200);
+        result.put("message", "OK");
+        if(likeListService.checkLikeByTableIdAndUserId(tableId, id))
+            result.put("like", true);
+        else
+            result.put("like", false);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }
