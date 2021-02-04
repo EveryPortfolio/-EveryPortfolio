@@ -1,39 +1,38 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { RightComponent } from '../../components/SignUpComponent/RightComponent/RightComponent';
 import { validation } from '../../lib/validation';
 import { createAPI, checkIDAPI } from '../../api/index';
 import { messages } from '../../util/message';
+import { useDebounce, useInput } from '../../hooks';
 
 export const RightContainer = (): JSX.Element => {
   const [email, setEmail] = useState('');
   const [duplication, setDuplication] = useState(false);
-  const [password, setPassword] = useState('');
-  const [repassword, setRePassword] = useState('');
-  const [name, setName] = useState('');
+  const [password, setPassword, onChangePassword] = useInput('');
+  const [repassword, setRePassword, onChangeRePassword] = useInput('');
+  const [name, setName, onChangeName] = useInput('');
+  const debounceEmail = useDebounce({ stateValue: email, delay: 2000 });
   const router = useRouter();
 
   console.log('render Right');
+
+  useEffect(() => {
+    if (debounceEmail === '') return;
+    console.log('debounce effect');
+    checkIDAPI({ id: debounceEmail })
+      .then(() => {
+        setDuplication(true);
+      })
+      .catch(() => {
+        setDuplication(false);
+      });
+  }, [debounceEmail]);
 
   const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log('change Email');
     setEmail(e.target.value);
     if (duplication) setDuplication(false);
-  };
-
-  const onChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('change password');
-    setPassword(e.target.value);
-  };
-
-  const onChangeRePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('change repassword');
-    setRePassword(e.target.value);
-  };
-
-  const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('change name');
-    setName(e.target.value);
   };
 
   const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -53,21 +52,11 @@ export const RightContainer = (): JSX.Element => {
       .then((res) => {
         setEmail('');
         setPassword('');
+        setRePassword('');
+        setName('');
         router.push('/');
       })
       .catch((err) => console.log('err check:', err));
-  };
-
-  const onCheck = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    checkIDAPI({ id: email })
-      .then(() => {
-        setDuplication(true);
-        alert(messages.AVAILABLEID);
-      })
-      .catch(() => {
-        setDuplication(false);
-      });
   };
 
   return (
@@ -81,7 +70,7 @@ export const RightContainer = (): JSX.Element => {
       onChangeName={onChangeName}
       repassword={repassword}
       onChangeRePassword={onChangeRePassword}
-      onCheck={onCheck}
+      duplication={duplication}
     />
   );
 };
