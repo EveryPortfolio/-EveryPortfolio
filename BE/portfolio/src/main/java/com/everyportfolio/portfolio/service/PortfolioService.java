@@ -35,4 +35,10 @@ public class PortfolioService {
     public Portfolio selectPortfolioByTableId(int tableId) {
         return portfolioMapper.selectPortfolioByTableId(tableId);
     }
+
+    public boolean existPortfolioByTableId(int tableId) {
+        if(portfolioMapper.selectPortfolioUserIdByTableId(tableId) == null)
+            return false;
+        return true;
+    }
 }
