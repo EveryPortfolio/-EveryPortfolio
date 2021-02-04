@@ -23,7 +23,6 @@ export const RightContainer = (): JSX.Element => {
     checkIDAPI({ id: debounceEmail })
       .then(() => {
         setDuplication(true);
-        alert(messages.AVAILABLEID);
       })
       .catch(() => {
         setDuplication(false);

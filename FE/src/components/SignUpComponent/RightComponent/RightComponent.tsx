@@ -5,7 +5,7 @@ import { RightComponentBackGround, TextDiv, TextInput, Button } from '../../comm
 const IsCheck = styled.div<{ email: string; duplication: boolean }>`
   height: 15px;
   visibility: ${(props) => {
-    return props.email !== '' && !props.duplication ? 'visible' : 'hidden';
+    return props.email !== '' ? 'visible' : 'hidden';
   }};
 `;
 interface RightComponentProps {
@@ -38,7 +38,15 @@ export const RightComponent = ({
       <TextDiv size='80px' margin='0px' text='SIGNUP' />
       <TextInput placeholder='Email' inputType='text' value={email} onChange={onChangeEmail} />
       <IsCheck email={email} duplication={duplication}>
-        <TextDiv size='15px' margin='5px' text='아이디의 형식이 맞지 않거나 중복되는 아이디가 존재합니다.' />
+        {duplication ? (
+          <TextDiv size='15px' margin='5px' text='사용가능한 이메일 입니다.' />
+        ) : (
+          <TextDiv
+            size='15px'
+            margin='5px'
+            text='아이디의 형식이 맞지 않거나 중복되는 아이디가 존재합니다.'
+          />
+        )}
       </IsCheck>
       <TextInput placeholder='Password' inputType='password' value={password} onChange={onChangePassword} />
       <TextInput
