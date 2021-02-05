@@ -1,10 +1,10 @@
-import { Header } from '@/components/common/Header';
 import * as React from 'react';
+import LoginComponent from '../components/LoginComponent/LoginComponent';
 
 const Index: React.FunctionComponent = () => {
   return (
     <>
-      <Header />
+      <LoginComponent />
     </>
   );
 };

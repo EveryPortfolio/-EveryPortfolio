@@ -91,6 +91,10 @@ export const resetCss = css`
     cursor: pointer;
     font-weight: 500;
   }
+  #__next {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export const GlobalStyle = createGlobalStyle`

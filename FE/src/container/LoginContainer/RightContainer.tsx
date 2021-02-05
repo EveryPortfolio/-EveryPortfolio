@@ -23,7 +23,7 @@ export const RightContainer = (): JSX.Element => {
   };
 
   const pushStateHandler = () => {
-    router.push('/signup');
+    router.push('/');
   };
 
   const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
