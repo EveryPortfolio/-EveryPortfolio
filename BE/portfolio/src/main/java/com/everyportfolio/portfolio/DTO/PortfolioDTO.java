@@ -11,4 +11,5 @@ public class PortfolioDTO {
     private String title;
     private String content;
     private int templateType;
+    private String thumbnailURL;
 }

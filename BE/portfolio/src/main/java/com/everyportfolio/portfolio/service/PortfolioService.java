@@ -3,18 +3,26 @@ package com.everyportfolio.portfolio.service;
 import com.everyportfolio.portfolio.mapper.PortfolioMapper;
 import com.everyportfolio.portfolio.model.Portfolio;
 import com.everyportfolio.portfolio.model.PortfolioWithThumbnail;
-import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PortfolioService {
+    @NonNull
     private PortfolioMapper portfolioMapper;
+    @Value("${everyportfolio.thumbnail.default}")
+    private String defaultThumbnailURL;
 
-    public void createPortfolio(String id, String title, String content, int templateType) {
-        portfolioMapper.insertPortfolio(id, title, content, templateType);
+    public void createPortfolio(String id, String title, String content, int templateType, String thumbnailURL) {
+        if(thumbnailURL == null)
+            portfolioMapper.insertPortfolio(id, title, content, templateType, defaultThumbnailURL);
+        else
+            portfolioMapper.insertPortfolio(id, title, content, templateType, thumbnailURL);
     }
 
     public boolean compareUserIdWithCreator(String id, int tableId) {

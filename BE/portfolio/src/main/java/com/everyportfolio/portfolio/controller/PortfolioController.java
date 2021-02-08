@@ -28,7 +28,7 @@ public class PortfolioController {
     public ResponseEntity<HashMap<String, Object>> createPortfolio(@RequestBody PortfolioDTO portfolio, @RequestHeader("access-token") String accessToken) {
         String id = gson.fromJson(accessToken, AccessTokenDTO.class).getId();
 
-        portfolioService.createPortfolio(id, portfolio.getTitle(), portfolio.getContent(), portfolio.getTemplateType());
+        portfolioService.createPortfolio(id, portfolio.getTitle(), portfolio.getContent(), portfolio.getTemplateType(), portfolio.getThumbnailURL());
 
         HashMap<String, Object> result = new HashMap<>();
         result.put("status", 200);
