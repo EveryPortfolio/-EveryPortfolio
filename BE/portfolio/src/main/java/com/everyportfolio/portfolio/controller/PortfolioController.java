@@ -5,6 +5,7 @@ import com.everyportfolio.portfolio.service.LikeListService;
 import com.everyportfolio.portfolio.service.PortfolioService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.sun.istack.Nullable;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,6 +127,32 @@ public class PortfolioController {
             result.put("like", true);
         else
             result.put("like", false);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<HashMap<String, Object>> searchPortfolioList(@RequestParam("type") int type,
+                                                                       @RequestParam("maxTableId") int maxTableId,
+                                                                       @RequestParam(value = "maxLikeCount", required = false) Integer maxLikeCount,
+                                                                       @RequestParam(value = "userId", required = false) String userId,
+                                                                       @RequestParam(value = "title", required = false) String title) throws Exception{
+        if(title != null)
+            title = title.trim();
+
+        HashMap<String, Object> result = new HashMap<>();
+
+        if(type == 1) { // 최신 순
+            result.put("portfolioList", portfolioService.selectPortfolioListByLatest(maxTableId, userId, title));
+        }else if(type == 2) { // 좋아요 순
+            if(maxLikeCount == null)
+                throw new Exception();
+
+            result.put("portfolioList", portfolioService.selectPortfolioListByLikeCount(maxTableId, maxLikeCount, userId, title));
+        }
+
+        result.put("status", 200);
+        result.put("message", "OK");
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

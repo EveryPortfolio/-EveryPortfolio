@@ -12,28 +12,137 @@
         <result column="last_update" property="lastUpdateTime"/>
     </resultMap>
 
+    <resultMap id="portfolioWithThumbnailModel" type="com.everyportfolio.portfolio.model.PortfolioWithThumbnail">
+        <id column="table_id" property="tableId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId"/>
+        <result column="title" property="title"/>
+        <result column="thumbnail_url" property="thumbnailURL"/>
+        <result column="last_update" property="lastUpdateTime"/>
+        <result column="like_count" property="likeCount" jdbcType="INTEGER"/>
+    </resultMap>
+
     <insert id="insertPortfolio">
         INSERT INTO PORTFOLIO (USER_ID, TITLE, CONTENT, TEMPLATE_TYPE)
         VALUES (#{id}, #{title}, #{content}, #{templateType})
     </insert>
 
     <select id="selectPortfolioUserIdByTableId" resultType="String">
-        SELECT USER_ID FROM PORTFOLIO WHERE TABLE_ID = #{tableId}
+        SELECT USER_ID
+        FROM PORTFOLIO
+        WHERE TABLE_ID = #{tableId}
     </select>
 
     <update id="updatePortfolioTitle">
-        UPDATE PORTFOLIO SET TITLE=#{title} WHERE TABLE_ID = #{tableId}
+        UPDATE PORTFOLIO
+        SET TITLE=#{title}
+        WHERE TABLE_ID = #{tableId}
     </update>
 
     <update id="updatePortfolioContent">
-        UPDATE PORTFOLIO SET TEMPLATE_TYPE=#{templateType}, CONTENT=#{content} WHERE TABLE_ID = #{tableId}
+        UPDATE PORTFOLIO
+        SET TEMPLATE_TYPE=#{templateType}, CONTENT=#{content}
+        WHERE TABLE_ID = #{tableId}
     </update>
 
     <delete id="deletePortfolio">
-        DELETE FROM PORTFOLIO WHERE TABLE_ID = #{tableId}
+        DELETE FROM PORTFOLIO
+        WHERE TABLE_ID = #{tableId}
     </delete>
 
     <select id="selectPortfolioByTableId" resultMap="portfolioModel">
-        SELECT TABLE_ID, USER_ID, TITLE, CONTENT, LAST_UPDATE FROM PORTFOLIO WHERE TABLE_ID = #{tableId}
+        SELECT TABLE_ID, USER_ID, TITLE, CONTENT, LAST_UPDATE
+        FROM PORTFOLIO
+        WHERE TABLE_ID = #{tableId}
+    </select>
+
+    <select id="selectPortfolioListByLatest" resultMap="portfolioWithThumbnailModel">
+        SELECT A.TABLE_ID, A.USER_ID, A.TITLE, A.LAST_UPDATE, B.LIKE_COUNT
+        FROM PORTFOLIO AS A LEFT OUTER JOIN
+            (SELECT TABLE_ID, COUNT(*) AS LIKE_COUNT
+             FROM LIKE_LIST
+             WHERE #{maxTableId} > TABLE_ID
+             GROUP BY TABLE_ID) AS B
+        ON A.TABLE_ID = B.TABLE_ID
+        WHERE #{maxTableId} > A.TABLE_ID
+        ORDER BY A.TABLE_ID DESC LIMIT 10
+    </select>
+
+    <select id="selectPortfolioListByLatestAndUserId" resultMap="portfolioWithThumbnailModel">
+        SELECT A.TABLE_ID, A.USER_ID, A.TITLE, A.LAST_UPDATE, B.LIKE_COUNT
+        FROM PORTFOLIO AS A LEFT OUTER JOIN
+            (SELECT TABLE_ID, COUNT(*) AS LIKE_COUNT
+             FROM LIKE_LIST
+             WHERE #{maxTableId} > TABLE_ID
+             GROUP BY TABLE_ID) AS B
+        ON A.TABLE_ID = B.TABLE_ID
+        WHERE #{maxTableId} > A.TABLE_ID AND A.USER_ID = #{userId}
+        ORDER BY A.TABLE_ID DESC LIMIT 10
+    </select>
+
+    <select id="selectPortfolioListByLatestAndTitle" resultMap="portfolioWithThumbnailModel">
+        SELECT A.TABLE_ID, A.USER_ID, A.TITLE, A.LAST_UPDATE, B.LIKE_COUNT
+        FROM PORTFOLIO AS A LEFT OUTER JOIN
+            (SELECT TABLE_ID, COUNT(*) AS LIKE_COUNT
+             FROM LIKE_LIST
+             WHERE #{maxTableId} > TABLE_ID
+             GROUP BY TABLE_ID) AS B
+        ON A.TABLE_ID = B.TABLE_ID
+        WHERE #{maxTableId} > A.TABLE_ID AND A.TITLE LIKE CONCAT('%', #{title}, '%')
+        ORDER BY A.TABLE_ID DESC LIMIT 10
+    </select>
+
+    <select id="selectPortfolioListByLatestAndUserIdAndTitle" resultMap="portfolioWithThumbnailModel">
+        SELECT A.TABLE_ID, A.USER_ID, A.TITLE, A.LAST_UPDATE, B.LIKE_COUNT
+        FROM PORTFOLIO AS A LEFT OUTER JOIN
+            (SELECT TABLE_ID, COUNT(*) AS LIKE_COUNT
+             FROM LIKE_LIST
+             WHERE #{maxTableId} > TABLE_ID
+             GROUP BY TABLE_ID) AS B
+        ON A.TABLE_ID = B.TABLE_ID
+        WHERE #{maxTableId} > A.TABLE_ID AND A.TITLE LIKE CONCAT('%', #{title}, '%') AND A.USER_ID = #{userId}
+        ORDER BY A.TABLE_ID DESC LIMIT 10
+    </select>
+
+    <select id="selectPortfolioListByLikeCount" resultMap="portfolioWithThumbnailModel">
+        SELECT A.TABLE_ID, A.USER_ID, A.TITLE, A.LAST_UPDATE, B.LIKE_COUNT
+        FROM PORTFOLIO AS A LEFT OUTER JOIN
+            (SELECT TABLE_ID, COUNT(*) AS LIKE_COUNT
+             FROM LIKE_LIST
+             GROUP BY TABLE_ID) AS B
+        ON A.TABLE_ID = B.TABLE_ID
+        WHERE (#{maxLikeCount} > COALESCE(B.LIKE_COUNT, 0) OR (#{maxLikeCount} = COALESCE(B.LIKE_COUNT, 0) AND #{maxTableId} > A.TABLE_ID))
+        ORDER BY COALESCE(B.LIKE_COUNT, 0) DESC, A.TABLE_ID DESC LIMIT 10
+    </select>
+
+    <select id="selectPortfolioListByLikeCountAndUserId" resultMap="portfolioWithThumbnailModel">
+        SELECT A.TABLE_ID, A.USER_ID, A.TITLE, A.LAST_UPDATE, B.LIKE_COUNT
+        FROM PORTFOLIO AS A LEFT OUTER JOIN
+            (SELECT TABLE_ID, COUNT(*) AS LIKE_COUNT
+             FROM LIKE_LIST
+             GROUP BY TABLE_ID) AS B
+        ON A.TABLE_ID = B.TABLE_ID
+        WHERE A.USER_ID = #{userId} AND (#{maxLikeCount} > COALESCE(B.LIKE_COUNT, 0) OR (#{maxLikeCount} = COALESCE(B.LIKE_COUNT, 0) AND #{maxTableId} > A.TABLE_ID))
+        ORDER BY COALESCE(B.LIKE_COUNT, 0) DESC, A.TABLE_ID DESC LIMIT 10
+    </select>
+
+    <select id="selectPortfolioListByLikeCountAndTitle" resultMap="portfolioWithThumbnailModel">
+        SELECT A.TABLE_ID, A.USER_ID, A.TITLE, A.LAST_UPDATE, B.LIKE_COUNT
+        FROM PORTFOLIO AS A LEFT OUTER JOIN
+             (SELECT TABLE_ID, COUNT(*) AS LIKE_COUNT
+             FROM LIKE_LIST
+             GROUP BY TABLE_ID) AS B
+        ON A.TABLE_ID = B.TABLE_ID
+        WHERE A.TITLE LIKE CONCAT('%', #{title}, '%') AND (#{maxLikeCount} > COALESCE(B.LIKE_COUNT, 0) OR (#{maxLikeCount} = COALESCE(B.LIKE_COUNT, 0) AND #{maxTableId} > A.TABLE_ID))
+        ORDER BY COALESCE(B.LIKE_COUNT, 0) DESC, A.TABLE_ID DESC LIMIT 10
+    </select>
+    <select id="selectPortfolioListByLikeCountAndUserIdAndTitle" resultMap="portfolioWithThumbnailModel">
+        SELECT A.TABLE_ID, A.USER_ID, A.TITLE, A.LAST_UPDATE, B.LIKE_COUNT
+        FROM PORTFOLIO AS A LEFT OUTER JOIN
+            (SELECT TABLE_ID, COUNT(*) AS LIKE_COUNT
+             FROM LIKE_LIST
+             GROUP BY TABLE_ID) AS B
+        ON A.TABLE_ID = B.TABLE_ID
+        WHERE A.USER_ID = #{userId} AND A.TITLE LIKE CONCAT('%', #{title}, '%') AND (#{maxLikeCount} > COALESCE(B.LIKE_COUNT, 0) OR (#{maxLikeCount} = COALESCE(B.LIKE_COUNT, 0) AND #{maxTableId} > A.TABLE_ID))
+        ORDER BY COALESCE(B.LIKE_COUNT, 0) DESC, A.TABLE_ID DESC LIMIT 10
     </select>
 </mapper>

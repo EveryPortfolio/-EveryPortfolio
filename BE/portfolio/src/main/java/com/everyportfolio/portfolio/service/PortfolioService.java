@@ -2,8 +2,11 @@ package com.everyportfolio.portfolio.service;
 
 import com.everyportfolio.portfolio.mapper.PortfolioMapper;
 import com.everyportfolio.portfolio.model.Portfolio;
+import com.everyportfolio.portfolio.model.PortfolioWithThumbnail;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -40,5 +43,29 @@ public class PortfolioService {
         if(portfolioMapper.selectPortfolioUserIdByTableId(tableId) == null)
             return false;
         return true;
+    }
+
+    public List<PortfolioWithThumbnail> selectPortfolioListByLatest(int maxTableId, String userId, String title) {
+        if(userId != null && title != null) {
+            return portfolioMapper.selectPortfolioListByLatestAndUserIdAndTitle(maxTableId, userId, title);
+        }else if(userId != null) {
+            return portfolioMapper.selectPortfolioListByLatestAndUserId(maxTableId, userId);
+        }else if(title != null) {
+            return portfolioMapper.selectPortfolioListByLatestAndTitle(maxTableId, title);
+        }else {
+            return portfolioMapper.selectPortfolioListByLatest(maxTableId);
+        }
+    }
+
+    public List<PortfolioWithThumbnail> selectPortfolioListByLikeCount(int maxTableId, int maxLikeCount, String userId, String title) {
+        if(userId != null && title != null) {
+            return portfolioMapper.selectPortfolioListByLikeCountAndUserIdAndTitle(maxTableId, maxLikeCount, userId, title);
+        }else if(userId != null) {
+            return portfolioMapper.selectPortfolioListByLikeCountAndUserId(maxTableId, maxLikeCount, userId);
+        }else if(title != null) {
+            return portfolioMapper.selectPortfolioListByLikeCountAndTitle(maxTableId, maxLikeCount, title);
+        }else {
+            return portfolioMapper.selectPortfolioListByLikeCount(maxTableId, maxLikeCount);
+        }
     }
 }
