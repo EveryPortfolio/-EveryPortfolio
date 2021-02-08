@@ -22,8 +22,8 @@
     </resultMap>
 
     <insert id="insertPortfolio">
-        INSERT INTO PORTFOLIO (USER_ID, TITLE, CONTENT, TEMPLATE_TYPE)
-        VALUES (#{id}, #{title}, #{content}, #{templateType})
+        INSERT INTO PORTFOLIO (USER_ID, TITLE, CONTENT, TEMPLATE_TYPE, THUMBNAIL_URL)
+        VALUES (#{id}, #{title}, #{content}, #{templateType}, #{thumbnailURL})
     </insert>
 
     <select id="selectPortfolioUserIdByTableId" resultType="String">
