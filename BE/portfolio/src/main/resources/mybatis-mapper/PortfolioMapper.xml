@@ -56,30 +56,51 @@
     </select>
 
     <select id="selectPortfolioListByLatest" resultMap="portfolioWithThumbnailModel">
-        SELECT TABLE_ID, USER_ID, TITLE, LAST_UPDATE
-        FROM PORTFOLIO
-        WHERE #{maxTableId} > TABLE_ID ORDER BY TABLE_ID DESC LIMIT 10
+        SELECT A.TABLE_ID, A.USER_ID, A.TITLE, A.LAST_UPDATE, B.LIKE_COUNT
+        FROM PORTFOLIO AS A LEFT OUTER JOIN
+            (SELECT TABLE_ID, COUNT(*) AS LIKE_COUNT
+             FROM LIKE_LIST
+             WHERE #{maxTableId} > TABLE_ID
+             GROUP BY TABLE_ID) AS B
+        ON A.TABLE_ID = B.TABLE_ID
+        WHERE #{maxTableId} > A.TABLE_ID
+        ORDER BY A.TABLE_ID DESC LIMIT 10
     </select>
 
     <select id="selectPortfolioListByLatestAndUserId" resultMap="portfolioWithThumbnailModel">
-        SELECT TABLE_ID, USER_ID, TITLE, LAST_UPDATE
-        FROM
-            (SELECT TABLE_ID, USER_ID, TITLE, LAST_UPDATE FROM PORTFOLIO WHERE USER_ID = #{userId}) as a
-        WHERE #{maxTableId} > TABLE_ID ORDER BY TABLE_ID DESC LIMIT 10
+        SELECT A.TABLE_ID, A.USER_ID, A.TITLE, A.LAST_UPDATE, B.LIKE_COUNT
+        FROM PORTFOLIO AS A LEFT OUTER JOIN
+            (SELECT TABLE_ID, COUNT(*) AS LIKE_COUNT
+             FROM LIKE_LIST
+             WHERE #{maxTableId} > TABLE_ID
+             GROUP BY TABLE_ID) AS B
+        ON A.TABLE_ID = B.TABLE_ID
+        WHERE #{maxTableId} > A.TABLE_ID AND A.USER_ID = #{userId}
+        ORDER BY A.TABLE_ID DESC LIMIT 10
     </select>
 
     <select id="selectPortfolioListByLatestAndTitle" resultMap="portfolioWithThumbnailModel">
-        SELECT TABLE_ID, USER_ID, TITLE, LAST_UPDATE
-        FROM
-            (SELECT TABLE_ID, USER_ID, TITLE, LAST_UPDATE FROM PORTFOLIO WHERE TITLE LIKE CONCAT('%', #{title}, '%') ) AS A
-        WHERE #{maxTableId} > TABLE_ID ORDER BY TABLE_ID DESC LIMIT 10
+        SELECT A.TABLE_ID, A.USER_ID, A.TITLE, A.LAST_UPDATE, B.LIKE_COUNT
+        FROM PORTFOLIO AS A LEFT OUTER JOIN
+            (SELECT TABLE_ID, COUNT(*) AS LIKE_COUNT
+             FROM LIKE_LIST
+             WHERE #{maxTableId} > TABLE_ID
+             GROUP BY TABLE_ID) AS B
+        ON A.TABLE_ID = B.TABLE_ID
+        WHERE #{maxTableId} > A.TABLE_ID AND A.TITLE LIKE CONCAT('%', #{title}, '%')
+        ORDER BY A.TABLE_ID DESC LIMIT 10
     </select>
 
     <select id="selectPortfolioListByLatestAndUserIdAndTitle" resultMap="portfolioWithThumbnailModel">
-        SELECT TABLE_ID, USER_ID, TITLE, LAST_UPDATE
-        FROM
-            (SELECT TABLE_ID, USER_ID, TITLE, LAST_UPDATE FROM PORTFOLIO WHERE TITLE LIKE CONCAT('%', #{title}, '%') AND USER_ID = #{userId}) AS A
-        WHERE #{maxTableId} > TABLE_ID ORDER BY TABLE_ID DESC LIMIT 10
+        SELECT A.TABLE_ID, A.USER_ID, A.TITLE, A.LAST_UPDATE, B.LIKE_COUNT
+        FROM PORTFOLIO AS A LEFT OUTER JOIN
+            (SELECT TABLE_ID, COUNT(*) AS LIKE_COUNT
+             FROM LIKE_LIST
+             WHERE #{maxTableId} > TABLE_ID
+             GROUP BY TABLE_ID) AS B
+        ON A.TABLE_ID = B.TABLE_ID
+        WHERE #{maxTableId} > A.TABLE_ID AND A.TITLE LIKE CONCAT('%', #{title}, '%') AND A.USER_ID = #{userId}
+        ORDER BY A.TABLE_ID DESC LIMIT 10
     </select>
 
     <select id="selectPortfolioListByLikeCount" resultMap="portfolioWithThumbnailModel">
