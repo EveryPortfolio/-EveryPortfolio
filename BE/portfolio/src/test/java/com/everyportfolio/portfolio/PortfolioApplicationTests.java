@@ -32,30 +32,24 @@ class PortfolioApplicationTests {
 	void contextLoads() {
 	}
 
-/*	@Test
+	@Test
 	void checkCreatePortfolio() {
 		String accessToken1 = "{ \"id\": \"juyj7282@gmail.com\", \"auth\" : \"USER\" }";
-		String accessToken2 = "{ \"id\": \"king7282@gmail.com\", \"auth\" : \"USER\" }";
 
 		HashMap<String, Object> params = new HashMap<>();
 		params.put("content", "i dont know how to fill in this box");
 		params.put("templateType", "1");
-
-		for(int i = 0; i < 10; i++) {
 			try {
 
-				params.put("title", "hiii~" + Integer.toString(i * 2));
+				params.put("title", "hiii...??");
 				mockMvc.perform(MockMvcRequestBuilders.post("/create").header("access-token", accessToken1).
 																					contentType("application/json").
 																					content((new Gson()).toJson(params))).andDo(print());
 
-				params.put("title", "hiii~" + Integer.toString(i * 2 + 1));
-				mockMvc.perform(MockMvcRequestBuilders.post("/create").header("access-token", accessToken2).contentType("application/json").content((new Gson()).toJson(params))).andDo(print());
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
-		}
-	}*/
+	}
 	/*@Test
 	void checkUpdateTitle() {
 		String accessToken = "{ \"id\": \"juyj7282@gmail.com\", \"auth\" : \"USER\" }";
@@ -155,7 +149,7 @@ class PortfolioApplicationTests {
 		}
 	}*/
 
-	@Test
+	/*@Test
 	void checkSearchByLatest() {
 		try {
 			MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/search").
@@ -171,7 +165,7 @@ class PortfolioApplicationTests {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	/*@Test
 	void checkSearchByLikeCount() {
