@@ -155,12 +155,12 @@ class PortfolioApplicationTests {
 		}
 	}*/
 
-	/*@Test
+	@Test
 	void checkSearchByLatest() {
 		try {
 			MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/search").
-												   param("maxTableId", "100").
-												   param("type", "1").param("title", "ii").param("userId", "king7282@gmail.com"))
+												   param("maxTableId", "23").
+												   param("type", "1").param("title", "hi"))
 					.andDo(print()).andReturn();
 
 			PortfolioListVO body = (new Gson()).fromJson(result.getResponse().getContentAsString(), PortfolioListVO.class);
@@ -171,9 +171,9 @@ class PortfolioApplicationTests {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-	}*/
+	}
 
-	@Test
+	/*@Test
 	void checkSearchByLikeCount() {
 		try {
 			MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/search").
@@ -189,7 +189,7 @@ class PortfolioApplicationTests {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	@Getter
 	@Setter
 	@NoArgsConstructor
