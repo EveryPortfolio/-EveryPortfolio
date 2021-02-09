@@ -3,7 +3,6 @@ package com.everyportfolio.portfolio;
 import com.everyportfolio.portfolio.model.PortfolioWithThumbnail;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import lombok.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -184,7 +183,7 @@ class PortfolioApplicationTests {
 			e.printStackTrace();
 		}
 	}*/
-	@Getter
+	/*@Getter
 	@Setter
 	@NoArgsConstructor
 	@AllArgsConstructor
@@ -193,5 +192,5 @@ class PortfolioApplicationTests {
 		private ArrayList<PortfolioWithThumbnail> portfolioList;
 		private String message;
 		private String status;
-	}
+	}*/
 }
