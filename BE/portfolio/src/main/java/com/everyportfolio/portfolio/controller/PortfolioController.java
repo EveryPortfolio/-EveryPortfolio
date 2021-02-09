@@ -53,7 +53,7 @@ public class PortfolioController {
             throw new TooLongTitleException(id + "'s portfolio title request is too long");
 
         if(!portfolioService.compareUserIdWithCreator(id, title.getTableId()))
-            throw new Exception();
+            throw new NotEqualToWriterException(id + "'s request is not equal to " + title.getTableId() + "'s writer");
 
         portfolioService.updatePortfolioTitle(title.getTableId(), title.getTitle());
 
