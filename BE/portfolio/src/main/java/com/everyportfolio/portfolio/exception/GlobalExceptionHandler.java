@@ -66,7 +66,7 @@ public class GlobalExceptionHandler {
         result.put("message", "the requester is not equal to portfolio writer");
         result.put("status", 403);
 
-        return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(result, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(TooLongThumbnailURLException.class)
